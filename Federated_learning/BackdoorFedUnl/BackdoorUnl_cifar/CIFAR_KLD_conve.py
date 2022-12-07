@@ -3,6 +3,7 @@ import sys
 sys.argv = ['']
 del sys
 
+import time
 import numpy as np
 import os
 import math
@@ -1186,8 +1187,11 @@ class LocalUpdate(object):
 
         for epoch in range(self.args.local_ep):
             step_start = epoch * len(self.ldr_train)
+            start = time.clock()
             net, optimizer = LocalUpdate.learning_train(self.ldr_train, net, step_start, self.loss_func, reconstruction_function,
                                              optimizer, args, epoch,idx)
+            end = time.clock()
+            print('running time of each epoch', end - start)
             # net.eval()
         return net.state_dict()
 

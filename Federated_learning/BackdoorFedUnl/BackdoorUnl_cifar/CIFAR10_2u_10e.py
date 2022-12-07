@@ -2618,8 +2618,8 @@ if __name__ == '__main__':
     args.erased_portion = 0.2
     args.erased_local_r = 0.1
     ## in unlearning, we should make the unlearned model first be backdoored and then forget the trigger effect
-    args.unlearn_learning_rate = 0.1
-    args.self_sharing_rate = 0.1
+    args.unlearn_learning_rate = 10
+    args.self_sharing_rate = 10
     args.reverse_rate = 1
     args.unl_KLD_lr = 1
     args.unl_conver_r = 2

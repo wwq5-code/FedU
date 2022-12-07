@@ -4,9 +4,9 @@ import numpy as np
 # user num = 50
 labels = ['$K_e$ = 1', '$K_e$ = 2', '$K_e$ = 3', '$K_e$ = 4', '$K_e$ = 5']
 unl_fr = [40, 40, 40, 40, 40]
-unl_br = [10, 10, 6, 1, 1]
-unl_self_r = [10, 10, 10, 3, 1]
-unl_hess_r = [18,  18, 18, 18, 18]
+unl_br = [40, 20, 6, 1, 1]
+unl_self_r = [40, 25, 10, 3, 1]
+unl_hess_r = [40,  27, 18, 22, 15]
 
 x = np.arange(len(labels))  # the label locations
 width = 0.6  # the width of the bars

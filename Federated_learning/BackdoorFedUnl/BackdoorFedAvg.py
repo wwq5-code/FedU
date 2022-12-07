@@ -27,7 +27,7 @@ from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
 
 # from VIBImodels import ResNet, resnet18, resnet34, Unet
-
+import time
 # from debug import debug
 import torch.nn as nn
 import torch.optim
@@ -1175,8 +1175,11 @@ class LocalUpdate(object):
 
         for epoch in range(self.args.local_ep):
             step_start = epoch * len(self.ldr_train)
+            start = time.clock()
             net, optimizer = LocalUpdate.learning_train(self.ldr_train, net, step_start, self.loss_func, reconstruction_function,
                                              optimizer, args, epoch,idx)
+            end = time.clock()
+            print("running time of one epoch", end - start)
             # net.eval()
         return net.state_dict()
 
