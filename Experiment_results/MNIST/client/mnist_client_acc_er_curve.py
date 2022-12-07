@@ -12,7 +12,7 @@ x=[1, 2, 3, 4, 5]
 # attack_for_plt=[0, 0.3524, 0, 0.1762, 0.1762]
 # basic_for_plt=[99.8, 99.8, 99.8, 99.8, 99.8]
 
-labels = ['$er$=1%', '5%', '10%', '15%', '20%']
+labels = ['1%', '5%', '10%', '15%', '20%']
 unl_fr = [99.9, 99.9, 99.9, 99.9, 99.9]
 unl_br = [93.0, 79.6, 91.0, 84.7, 85.6]
 unl_self_r = [97.99, 87.66, 97.0, 92.6, 94.16]
@@ -39,7 +39,7 @@ plt.ylabel('Accuracy (%)' ,fontsize=20)
 my_y_ticks = np.arange(80 ,101,5)
 plt.yticks(my_y_ticks,fontsize=20)
 
-
+plt.xlabel('$\it{EDR}$' ,fontsize=20)
 plt.xticks(x, labels, fontsize=20)
 # plt.title('CIFAR10 IID')
 plt.legend(loc='best',fontsize=20)

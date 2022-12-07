@@ -12,7 +12,7 @@ x=[1, 2, 3, 4, 5]
 # attack_for_plt=[0, 0.3524, 0, 0.1762, 0.1762]
 # basic_for_plt=[99.8, 99.8, 99.8, 99.8, 99.8]
 
-labels = ['$er$=1%', '5%', '10%', '15%', '20%']
+labels = ['1%', '5%', '10%', '15%', '20%']
 unl_fr = [99.9, 99.9, 99.9, 99.9, 99.9]
 unl_br = [59.99, 27.66, 15.39, 10.99, 9.59]
 unl_self_r = [75.99, 69.99, 67.39, 57.37, 58.19]
@@ -36,9 +36,9 @@ plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
 plt.ylabel('Accuracy (%)' ,fontsize=20)
-my_y_ticks = np.arange(80 ,101,5)
+my_y_ticks = np.arange(0 ,101,20)
 plt.yticks(my_y_ticks,fontsize=20)
-
+plt.xlabel('$\it{EDR}$' ,fontsize=20)
 
 plt.xticks(x, labels, fontsize=20)
 # plt.title('CIFAR10 IID')

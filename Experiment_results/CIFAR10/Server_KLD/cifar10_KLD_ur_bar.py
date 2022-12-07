@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # user num = 50
-labels = ['$\\beta$ = 0.01', '0.05', '0.1', '0.15', '0.2']
+labels = ['0.01', '0.05', '0.1', '0.15', '0.2']
 unl_fr = [22*42/22,  32.37 * 42/32.37  ,42 * 42/42 , 26.49*42/26.49, 21.46*42/21.46 ]
 unl_br = [20.31*42/22, 24.77 * 42/32.37   ,41.04* 42/42, 22.97*42/26.49, 16.70*42/21.46]
 unl_self_r = [18.76*42/22, 25 * 42/32.37 ,41.16* 42/42, 22.78*42/26.49, 18.06*42/21.46 ]
@@ -36,6 +36,7 @@ plt.legend(loc='lower right', fontsize=15)
 # ax.bar_label(rects2, padding=3)
 # ax.bar_label(rects3, padding=3)
 
+plt.xlabel('$\\beta$' ,fontsize=20)
 plt.tight_layout()
 
 plt.rcParams['figure.figsize'] = (2.0, 1)

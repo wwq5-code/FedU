@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # user num = 50
-labels = ['$er$=1%', '5%', '10%', '15%', '20%']
+labels = ['1%', '5%', '10%', '15%', '20%']
 unl_fr = [1*2, 1*2, 1*2, 1*2, 1*2]
 unl_br = [0.01*13, 0.05*6, 0.1*5, 0.15*4, 0.2*3]
 unl_self_r = [0.02*13, 0.1*7, 0.2*5, 0.3*4, 0.4*3]
@@ -31,7 +31,7 @@ plt.yticks(my_y_ticks, fontsize=20)
 # ax.set_yticklabels(my_y_ticks,fontsize=15)
 
 plt.legend(loc='upper right', fontsize=15)
-
+plt.xlabel('$\it{EDR}$' ,fontsize=20)
 # ax.bar_label(rects1, padding=1)
 # ax.bar_label(rects2, padding=3)
 # ax.bar_label(rects3, padding=3)

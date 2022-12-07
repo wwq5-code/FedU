@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # user num = 50
-labels = ['$\\beta$ = 0.01', '0.05', '0.1', '0.15', '0.2']
+labels = ['0.01', '0.05', '0.1', '0.15', '0.2']
 unl_fr = [40, 40, 40, 40, 40]
 unl_br = [5, 40, 6, 8, 11]
 unl_self_r = [7, 25, 10, 10, 8]
@@ -31,7 +31,7 @@ plt.yticks(my_y_ticks, fontsize=20)
 # ax.set_yticklabels(my_y_ticks,fontsize=15)
 
 plt.legend(loc='upper right', fontsize=15)
-
+plt.xlabel('$\\beta$' ,fontsize=20)
 # ax.bar_label(rects1, padding=1)
 # ax.bar_label(rects2, padding=3)
 # ax.bar_label(rects3, padding=3)

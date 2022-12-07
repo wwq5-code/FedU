@@ -1179,7 +1179,7 @@ class LocalUpdate(object):
             net, optimizer = LocalUpdate.learning_train(self.ldr_train, net, step_start, self.loss_func, reconstruction_function,
                                              optimizer, args, epoch,idx)
             end = time.clock()
-            print("running time of one epoch", end - start)
+            #print("running time of one epoch", end - start)
             # net.eval()
         return net.state_dict()
 
@@ -2617,7 +2617,7 @@ if __name__ == '__main__':
     args.lr = 0.001
     args.erased_size = 1500 #120
     args.poison_portion = 0.0
-    args.erased_portion = 0.5
+    args.erased_portion = 0.4
     args.erased_local_r = 0.1
     ## in unlearning, we should make the unlearned model first be backdoored and then forget the trigger effect
     args.unlearn_learning_rate = 0.1

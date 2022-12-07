@@ -12,7 +12,7 @@ x=[1, 2, 3, 4, 5]
 # attack_for_plt=[0, 0.3524, 0, 0.1762, 0.1762]
 # basic_for_plt=[99.8, 99.8, 99.8, 99.8, 99.8]
 
-labels = ['$\\beta$ = 0.1', '$\\beta$ = 0.5', '$\\beta$ = 1', '$\\beta$ = 1.5', '$\\beta$ = 2']
+labels = ['0.1', '0.5', '1', '1.5', '2']
 
 unl_fr = [0.002, 0.003, 0.003, 0.003, 0.003]
 unl_br = [0.08, 0.083, 0.098, 0.0748, 0.0757]
@@ -50,7 +50,7 @@ plt.ylabel('Backdoor Accuracy (%)' ,fontsize=20)
 my_y_ticks = np.arange(0 ,12,2)
 plt.yticks(my_y_ticks,fontsize=20)
 
-
+plt.xlabel('$\\beta$' ,fontsize=20)
 plt.xticks(x, labels, fontsize=20)
 # plt.title('CIFAR10 IID')
 plt.legend(loc='best',fontsize=20)
