@@ -3,9 +3,11 @@ import sys
 sys.argv = ['']
 del sys
 
-import time
 import numpy as np
 import os
+
+os.environ["CUDA_VISIBLE_DEVICES"]="3"
+
 import math
 from collections import defaultdict
 import argparse
@@ -247,7 +249,6 @@ def init_vibi(dataset):
         explainer = resnet18(3,  8*8*8*2)  # resnet18(1, 49*2)
         forgetter = LinearModel(n_feature=8*8*8, n_output=3 * 32 * 32)
         lr = 3e-4
-
 
     vibi = VIBI(explainer, approximator, forgetter, k=k, num_samples=args.num_samples)
     vibi.to(args.device)
@@ -1062,15 +1063,15 @@ class LocalUpdate(object):
 
     @staticmethod
     @torch.no_grad()
-    def hessian_unl_update(p, hess, args, i):
+    def hessian_unl_update(p_hs, args, i):
         average_conv_kernel = False
         weight_decay = 0.0
         betas = (0.9, 0.999)
         hessian_power = 1.0
         eps = args.lr # 1e-8
 
-        if average_conv_kernel and p.dim() == 4:
-            hess = torch.abs(hess).mean(dim=[2, 3], keepdim=True).expand_as(hess).clone()
+        if average_conv_kernel and p_hs.dim() == 4:
+            p_hs.hess = torch.abs(p_hs.hess).mean(dim=[2, 3], keepdim=True).expand_as(p_hs.hess).clone()
 
         # Perform correct stepweight decay as in AdamW
         # p = p.mul_(1 - args.lr * weight_decay)
@@ -1081,22 +1082,21 @@ class LocalUpdate(object):
         # State initialization
         if len(state) == 1:
             state['step'] = 0
-            state['exp_avg'] = torch.zeros_like(p.data)  # Exponential moving average of gradient values
+            state['exp_avg'] = torch.zeros_like(p_hs.data)  # Exponential moving average of gradient values
             state['exp_hessian_diag_sq'] = torch.zeros_like(
-                p.data)  # Exponential moving average of Hessian diagonal square values
+                p_hs.data)  # Exponential moving average of Hessian diagonal square values
 
         exp_avg, exp_hessian_diag_sq = state['exp_avg'], state['exp_hessian_diag_sq']
         beta1, beta2 = betas
         state['step'] = i
 
         # Decay the first and second moment running average coefficient
-
-        exp_avg.mul_(beta1).add_(p.grad, alpha=1 - beta1)
+        exp_avg.mul_(beta1).add_(p_hs.grad, alpha=1 - beta1)
         #exp_hessian_diag_sq.mul_(beta2).addcmul_(p_hs.hess, p_hs.hess, value=1 - beta2)
-        exp_hessian_diag_sq.mul_(beta2).addcmul_(hess, hess, value=1 - beta2)
+        exp_hessian_diag_sq.mul_(beta2).addcmul_(p_hs.hess, p_hs.hess, value=1 - beta2)
 
-        bias_correction1 = 1 #- beta1 ** state['step']
-        bias_correction2 = 1 #- beta2 ** state['step']
+        bias_correction1 = 1  #- beta1 ** state['step']
+        bias_correction2 = 1  #- beta2 ** state['step']
 
         k = hessian_power
         denom = (exp_hessian_diag_sq / bias_correction2).pow_(k / 2).add_(eps)
@@ -1104,7 +1104,7 @@ class LocalUpdate(object):
         # make update
         step_size = args.lr / bias_correction1
         # p.addcdiv_(exp_avg, denom, value=-step_size)
-        p = p.addcdiv_(exp_avg, denom, value=step_size * 0.1)
+        p_hs = p_hs.addcdiv_(exp_avg, denom, value=step_size * 0.1)
         #p_hs.data = p_hs.data + args.lr * p_hs.grad.data * 10
         return exp_avg, denom, step_size
 
@@ -1187,11 +1187,8 @@ class LocalUpdate(object):
 
         for epoch in range(self.args.local_ep):
             step_start = epoch * len(self.ldr_train)
-            start = time.clock()
             net, optimizer = LocalUpdate.learning_train(self.ldr_train, net, step_start, self.loss_func, reconstruction_function,
                                              optimizer, args, epoch,idx)
-            end = time.clock()
-            print('running time of each epoch', end - start)
             # net.eval()
         return net.state_dict()
 
@@ -1563,17 +1560,14 @@ class LocalUpdate(object):
         # train and update
         optimizer = torch.optim.Adam(net.parameters(), lr=args.lr)
         epoch_loss = []
-        acc_list = []
-        backdoor_list = []
+        acc_list =[]
         params_with_hs = None
-
         #prepare hessian
         for batch_idx, (images, labels) in enumerate(self.remaining_loader):
             images, labels = images.to(self.args.device), labels.to(self.args.device)
             B, c, h, w = images.shape
             # print(B,h,w)
-            if args.dataset == 'MNIST':
-                images = images.reshape((B, -1))
+            images = images.reshape((B, -1))
             net.zero_grad()
 
             logits_z, logits_y, x_hat, mu, logvar = net(images, mode='forgetting')  # (B, C* h* w), (B, N, 10)
@@ -1602,27 +1596,17 @@ class LocalUpdate(object):
 
 
         # unlearning
-        convergence = 0
         for iter in range(args.local_ep): #self.args.local_ep
             batch_loss = []
             # print(iter)
-            temp_acc = []
-            temp_back = []
-            for (images, labels), (images2, labels2) in zip(self.erased_loader, self.remaining_loader):
-            # for batch_idx, (images, labels) in enumerate(self.erased_loader):
+            for batch_idx, (images, labels) in enumerate(self.erased_loader):
                 images, labels = images.to(self.args.device), labels.to(self.args.device)
                 B,c,h,w = images.shape
                 #print(B,h,w)
                 images  = images.reshape((B, -1))
 
-                images2, labels2 = images2.to(self.args.device), labels2.to(self.args.device)
-                B, c, h, w = images2.shape
-
-                images2 = images2.reshape((B, -1))
-
                 net.zero_grad()
                 logits_z, logits_y, x_hat, mu, logvar = net(images, mode='forgetting')  # (B, C* h* w), (B, N, 10)
-                logits_z2, logits_y2, x_hat2, mu2, logvar2 = net(images2, mode='forgetting')
                 H_p_q = self.loss_func(logits_y, labels)
                 KLD_element = mu.pow(2).add_(logvar.exp()).mul_(-1).add_(1).add_(logvar).cuda()
                 KLD = torch.sum(KLD_element).mul_(-0.5).cuda()
@@ -1659,7 +1643,7 @@ class LocalUpdate(object):
                     #p.data = p_hs.data.addcdiv_(exp_avg, denom, value=step_size * args.lr)
                     if p.grad!=None:
                         exp_avg, denom, step_size = LocalUpdate.hessian_unl_update(p, temp_hs, args, i)
-                        p.data = p.data.addcdiv_(exp_avg, denom, value=step_size* args.hessian_rate)
+                        p.data = p.data.addcdiv_(exp_avg, denom, value=step_size)
                         #p.data =p.data + torch.div(p.grad.data, temp_hs) * args.lr #torch.mul(p_hs.hess, p.grad)*10
                         print(p.grad.data.shape)
                     else:
@@ -1670,22 +1654,12 @@ class LocalUpdate(object):
                 net.zero_grad()
 
                 fl_acc = (logits_y.argmax(dim=1) == labels).float().mean().item()
-                fl_acc2 = (logits_y2.argmax(dim=1) == labels2).float().mean().item()
-                temp_acc.append(fl_acc2)
-                temp_back.append(fl_acc)
-
+                # print('batch_idx', batch_idx)
                 if batch_idx % 1000 == 0 and iter==0:
-                    print("fl_acc2", fl_acc2, 'backdoor',fl_acc, "loss", loss.item(), "idx", idx)
+                    print("fl_acc", fl_acc, "loss", loss.item(), "idx", idx)
                 batch_loss.append(loss.item())
-
-            acc_list.append(np.mean(temp_acc))
-            backdoor_list.append(np.mean(temp_back))
+            acc_list.append(fl_acc)
             epoch_loss.append(sum(batch_loss)/len(batch_loss))
-            if np.mean(temp_back) < 0.1:
-                convergence = convergence + 1
-            if convergence >= args.unl_conver_r:
-                break
-        print("backdoor_list", backdoor_list)
         print("acc_list", acc_list)
         #net_local_w, loss_item = self.re_train(net, idx, args)
         return net.state_dict(), sum(epoch_loss) / len(epoch_loss)
@@ -2141,7 +2115,7 @@ def get_weights(model):
     return np.concatenate([p.data.cpu().numpy().ravel() for p in model.parameters()])
 
 
-def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_test, erased_perm,poison_testset):
+def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_test, erased_perm):
     unlearning_temp_net.train()
     # org_resnet.train()
 
@@ -2150,47 +2124,28 @@ def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_te
 
     # training
     acc_test = []
-    backdoor_acc_list = []
     poison_acc = []
     idxs_users = range(args.num_users)
 
     """3. federated unlearning"""
 
-    for iter in range(args.epochs):
+    for iter in range(1):
+        #dict_usersZ = []
         idxs_users = range(args.num_users)
         w_locals = []
         grad_locals = []
-        #1. unlearning
-        for idx in idxs_users:
-            if idx not in erased_perm:
-                local = idxs_local_dict[idx]
-                net_local_w = local.train_Bayes(copy.deepcopy(unlearning_temp_net).to(args.device), idx, args)
-
-                glob_w = unlearning_temp_net.state_dict()
-                new_lcoal_grad = unlearning_temp_net.state_dict()
-                for k in glob_w.keys():
-                    new_lcoal_grad[k] = glob_w[k] - net_local_w[k]
-
-                w_locals.append(copy.deepcopy(net_local_w))
-                grad_locals.append(copy.deepcopy(new_lcoal_grad))
-            else:
-                local = idxs_local_dict[idx]
-                net_local_w, loss_item = local.unl_train(copy.deepcopy(unlearning_temp_net).to(args.device), idx, args)
-
-                glob_w = unlearning_temp_net.state_dict()
-                new_lcoal_grad = unlearning_temp_net.state_dict()
-                for k in glob_w.keys():
-                    new_lcoal_grad[k] = glob_w[k] - net_local_w[k]
-
-                w_locals.append(copy.deepcopy(net_local_w))
-                grad_locals.append(copy.deepcopy(new_lcoal_grad))
-
-        #dict_usersZ = []
-
         for idx in erased_perm:
             local  = idxs_local_dict[idx]
 
+            net_local_w, loss_item = local.unl_train(copy.deepcopy(unlearning_temp_net).to(args.device), idx, args)
 
+            glob_w = unlearning_temp_net.state_dict()
+            new_lcoal_grad = unlearning_temp_net.state_dict()
+            for k in glob_w.keys():
+                new_lcoal_grad[k] = glob_w[k] - net_local_w[k]
+
+            w_locals.append(copy.deepcopy(net_local_w))
+            grad_locals.append(copy.deepcopy(new_lcoal_grad))
             #w_locals_org.append(copy.deepcopy(org_net_glob_w))
 
 
@@ -2205,13 +2160,6 @@ def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_te
         valid_acc = test_accuracy(unlearning_temp_net, dataset_test, args, name='vibi valid top1')
         # interpolate_valid_acc = torch.linspace(valid_acc_old, valid_acc, steps=len(train_loader)).tolist()
         print("test_acc", valid_acc)
-        acc_test.append(valid_acc)
-        backdoor_acc = test_accuracy(unlearning_temp_net, poison_testset, args, name='vibi valid top1')
-        backdoor_acc_list.append(backdoor_acc)
-        # interpolate_valid_acc = torch.linspace(valid_acc_old, valid_acc, steps=len(train_loader)).tolist()
-        print("backdoor_acc", backdoor_acc)
-        if backdoor_acc < 0.1:
-            break
         # print("epoch: ", iter)
         # acc_temp, poison_acc_temp = acc_evaluation_org(unlearning_temp_net, dataset_test, args)
         # acc_test.append(acc_temp)
@@ -2220,8 +2168,7 @@ def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_te
         # print("poison_acc_list:", poison_acc)
         #unlearning_temp_net = retrianing_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_test, erased_perm, 1)
 
-    print('backdoor_acc_list', backdoor_acc_list)
-    print('test_acc',acc_test)
+    print(acc_test)
     #print(acc_test_org)
     unlearning_temp_net.eval()
     return unlearning_temp_net
@@ -2421,7 +2368,7 @@ def FL_unlearn_train(net_glob, net_temp, args, dataset_train, dataset_test, dict
         backdoor_acc_list.append(backdoor_acc)
         print("backdoor_acc", backdoor_acc_list)
         print("global_unl_acc: ", acc_test)
-        if backdoor_acc < 0.1:
+        if backdoor_acc < 0.02:
             break
     print("epoch: ", iter)
     # valid_acc_old = valid_acc
@@ -2532,7 +2479,6 @@ def clean_FL(args):
                             poison_targets=poison_targets, erased_perm=erased_perm, idx=idx)
         idxs_local_dict[idx] = local
 
-    print()
     print("start train")
     net_glob = FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local_dict, poison_testset, train_type='train')
 
@@ -2659,21 +2605,21 @@ if __name__ == '__main__':
     args.iid = True
     args.model = 'z_linear'
     args.local_bs = 100
-    args.local_ep = 10
+    args.local_ep = 2
     args.num_epochs = 1
     args.dataset = 'CIFAR10'
     args.xpl_channels = 1
-    args.epochs = int(10)
+    args.epochs = int(40)
     args.add_noise = False
     args.beta = 0.005
     args.lr = 0.0005
     args.erased_size = 1500 #120
     args.poison_portion = 0.0
     args.erased_portion = 0.3
-    args.erased_local_r = 0.15
+    args.erased_local_r = 0.1
     ## in unlearning, we should make the unlearned model first be backdoored and then forget the trigger effect
-    args.unlearn_learning_rate = 1
-    args.self_sharing_rate = 1
+    args.unlearn_learning_rate = 0.01
+    args.self_sharing_rate = 0.01
     args.reverse_rate = 1
     args.unl_KLD_lr = 1
     args.unl_conver_r = 2

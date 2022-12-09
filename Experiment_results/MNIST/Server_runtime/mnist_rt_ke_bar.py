@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # user num = 50
-labels = ['$K_e$ = 1', '$K_e$ = 2', '$K_e$ = 3', '$K_e$ = 4', '$K_e$ = 5']
+labels = ['1', '2', '3', '4', '5']
 unl_fr = [10*10*0.22, 10*10*0.22, 10*10*0.22, 10*10*0.22, 10*10*0.22]
 unl_br = [1*10*0.22, 4*10*0.22, 7*10*0.22, 3*10*0.22, 1*10*0.22]
 unl_self_r = [1*10*0.22, 3*10*0.22, 6*10*0.22, 2*10*0.22, 1*10*0.22]
@@ -16,10 +16,13 @@ width = 0.6  # the width of the bars
 
 
 plt.subplots()
-plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Retrain', hatch='/')
-plt.bar(x - width / 8, unl_br, width=0.148, label='BFU', hatch='**')
-plt.bar(x + width / 8, unl_self_r, width=0.148, label='BFU-SS', hatch='++')
-plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', hatch='-')
+plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Origin', color='royalblue', hatch='/')
+plt.bar(x - width / 8, unl_br, width=0.148, label='BFU', color='gold', hatch='**')
+plt.bar(x + width / 8, unl_self_r, width=0.148, label='BFU-SS', color='green', hatch='++')
+plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', color='red', hatch='-')
+
+
+
 # Add some text for labels, title and custom x-axis tick labels, etc.
 plt.ylabel('Running Time (s)', fontsize=20)
 # ax.set_title('Performance of Different Users n')
@@ -35,7 +38,7 @@ plt.legend(loc='upper left', fontsize=15)
 # ax.bar_label(rects1, padding=1)
 # ax.bar_label(rects2, padding=3)
 # ax.bar_label(rects3, padding=3)
-
+plt.xlabel('$K_e$' ,fontsize=20)
 plt.tight_layout()
 
 plt.rcParams['figure.figsize'] = (2.0, 1)

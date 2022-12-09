@@ -35,7 +35,7 @@ plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=4, marker
 plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
-plt.ylabel('Accuracy (%)' ,fontsize=20)
+plt.ylabel('Backdoor Accuracy (%)' ,fontsize=20)
 my_y_ticks = np.arange(0 ,5,1)
 plt.yticks(my_y_ticks,fontsize=20)
 plt.xlabel('$\it{EDR}$' ,fontsize=20)

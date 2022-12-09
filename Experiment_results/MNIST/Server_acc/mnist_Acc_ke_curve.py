@@ -12,7 +12,7 @@ x=[1, 2, 3, 4, 5]
 # attack_for_plt=[0, 0.3524, 0, 0.1762, 0.1762]
 # basic_for_plt=[99.8, 99.8, 99.8, 99.8, 99.8]
 
-labels = ['$K_e$ = 1', '$K_e$ = 2', '$K_e$ = 3', '$K_e$ = 4', '$K_e$ = 5']
+labels = ['1', '2', '3', '4', '5']
 unl_fr = [97.5, 97.5, 97.5, 97.5, 97.5]
 unl_br = [97.44, 97.6, 97.3, 95.6, 89]
 unl_self_r = [97.48, 97.68, 97.4, 97.2, 96.1]
@@ -38,7 +38,7 @@ leg = plt.legend(fancybox=True, shadow=True)
 plt.ylabel('Accuracy (%)' ,fontsize=20)
 my_y_ticks = np.arange(85 ,105,5)
 plt.yticks(my_y_ticks,fontsize=20)
-
+plt.xlabel('$K_e$' ,fontsize=20)
 
 plt.xticks(x, labels, fontsize=20)
 # plt.title('CIFAR10 IID')

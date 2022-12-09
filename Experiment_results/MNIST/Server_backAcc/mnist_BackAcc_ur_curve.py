@@ -18,7 +18,7 @@ unl_fr = [0.002, 0.003, 0.003, 0.003, 0.003]
 unl_br = [0.08, 0.083, 0.098, 0.0748, 0.0757]
 unl_self_r = [0.084, 0.08, 0.071, 0.0625 , 0.076]
 unl_hess_r = [0.028,  0.028, 0.028, 0.028, 0.028]
-
+org = [99.9, 99.9, 99.9, 99.9, 99.9]
 
 for i in range(len(unl_fr)):
     unl_fr[i] = unl_fr[i] *100
@@ -36,6 +36,8 @@ plt.figure()
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 plt.plot(x, unl_br, color='orange',  marker='x',  label='BFU',linewidth=4,  markersize=10)
 plt.plot(x, unl_self_r, color='g',  marker='*',  label='BFU-SS',linewidth=4, markersize=10)
+plt.plot(x, org, color='cyan',  marker='s',  label='Origin',linewidth=4, markersize=10)
+
 #plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
 # plt.plot(x, y_sa03, color='r',  marker='2',  label='AAAI21 A_acc, pr=0.3',linewidth=3, markersize=8)
 # plt.plot(x, y_sa05, color='darkblue',  marker='4',  label='AAAI21 A_acc, pr=0.5',linewidth=3, markersize=8)
@@ -47,7 +49,7 @@ plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
 plt.ylabel('Backdoor Accuracy (%)' ,fontsize=20)
-my_y_ticks = np.arange(0 ,12,2)
+my_y_ticks = np.arange(0 ,101,20)
 plt.yticks(my_y_ticks,fontsize=20)
 
 plt.xlabel('$\\beta$' ,fontsize=20)

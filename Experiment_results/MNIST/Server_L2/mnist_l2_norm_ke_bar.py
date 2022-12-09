@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # user num = 50
-labels = ['$K_e$ = 1', '$K_e$ = 2', '$K_e$ = 3', '$K_e$ = 4', '$K_e$ = 5']
+labels = ['1', '2', '3', '4', '5']
 unl_fr = [104, 104 , 104, 104, 104]
 unl_br = [105, 108, 112, 107, 105]
 unl_self_r = [105, 108, 111, 106, 105]
@@ -16,12 +16,15 @@ width = 0.6  # the width of the bars
 
 
 plt.subplots()
-plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Origin', hatch='/')
-plt.bar(x - width / 8, unl_br, width=0.148, label='BFU', hatch='**')
-plt.bar(x + width / 8, unl_self_r, width=0.148, label='BFU-SS', hatch='++')
-plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', hatch='-')
+plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Origin', color='royalblue', hatch='/')
+plt.bar(x - width / 8, unl_br, width=0.148, label='BFU', color='gold', hatch='**')
+plt.bar(x + width / 8, unl_self_r, width=0.148, label='BFU-SS', color='green', hatch='++')
+plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', color='red', hatch='-')
+
+
+
 # Add some text for labels, title and custom x-axis tick labels, etc.
-plt.ylabel('L$_2$-norm to Retrain', fontsize=20)
+plt.ylabel('L$_2$-norm', fontsize=20)
 # ax.set_title('Performance of Different Users n')
 plt.xticks(x, labels, fontsize=20)
 # ax.set_xticklabels(labels,fontsize=15)
@@ -31,6 +34,7 @@ plt.yticks(my_y_ticks, fontsize=20)
 # ax.set_yticklabels(my_y_ticks,fontsize=15)
 
 plt.legend(loc='lower right', fontsize=15)
+plt.xlabel('$K_e$' ,fontsize=20)
 
 # ax.bar_label(rects1, padding=1)
 # ax.bar_label(rects2, padding=3)

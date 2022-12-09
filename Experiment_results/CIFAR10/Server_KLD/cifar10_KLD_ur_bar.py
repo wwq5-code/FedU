@@ -2,11 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # user num = 50
-labels = ['0.01', '0.05', '0.1', '0.15', '0.2']
-unl_fr = [22*42/22,  32.37 * 42/32.37  ,42 * 42/42 , 26.49*42/26.49, 21.46*42/21.46 ]
-unl_br = [20.31*42/22, 24.77 * 42/32.37   ,41.04* 42/42, 22.97*42/26.49, 16.70*42/21.46]
-unl_self_r = [18.76*42/22, 25 * 42/32.37 ,41.16* 42/42, 22.78*42/26.49, 18.06*42/21.46 ]
-unl_hess_r = [21.82*42/22,  42 * 42/32.37,21.82*42/42, 21.82*42/26.49, 21.82*42/21.46 ]
+labels = ['0.001', '0.01', '0.1', '1', '10']
+unl_fr = [82.86*42/82.86,  22.101 * 42/22.101  ,24.84 * 42/24.84 , 39.49*42/39.49, 24.08*42/24.08]
+unl_br = [75.08*42/82.86, 20.31 * 42/22.101   ,23.73* 42/24.84, 42.03*42/39.49, 28.07*42/24.08]
+unl_self_r = [71.53*42/82.86, 18.76 * 42/22.101 ,21.87* 42/24.84, 42.17*42/39.49, 28.75*42/24.08 ]
+unl_hess_r = [21.82*42/82.86,  42 * 42/22.101,21.82*42/24.84, 21.82*42/39.49, 21.82*42/24.08 ]
 
 x = np.arange(len(labels))  # the label locations
 width = 0.6  # the width of the bars
@@ -16,12 +16,13 @@ width = 0.6  # the width of the bars
 
 
 plt.subplots()
-plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Origin', hatch='/')
-plt.bar(x - width / 8, unl_br, width=0.148, label='BFU', hatch='**')
-plt.bar(x + width / 8, unl_self_r, width=0.148, label='BFU-SS', hatch='++')
+plt.bar(x - width / 4, unl_fr, width=0.148, label='Origin', color='royalblue',  hatch='/')
+plt.bar(x - 0, unl_br, width=0.148, label='BFU', color='gold', hatch='**')
+plt.bar(x + width / 4, unl_self_r, width=0.148, label='BFU-SS', color='green', hatch='++')
+
 #plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', hatch='-')
 # Add some text for labels, title and custom x-axis tick labels, etc.
-plt.ylabel('KLD to Retrain', fontsize=20)
+plt.ylabel('KLD', fontsize=20)
 # ax.set_title('Performance of Different Users n')
 plt.xticks(x, labels, fontsize=20)
 # ax.set_xticklabels(labels,fontsize=15)

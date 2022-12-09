@@ -16,10 +16,12 @@ width = 0.6  # the width of the bars
 
 
 plt.subplots()
-plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Retrain', hatch='/')
-plt.bar(x - width / 8, unl_br, width=0.148, label='BFU', hatch='**')
-plt.bar(x + width / 8, unl_self_r, width=0.148, label='BFU-SS', hatch='++')
-plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', hatch='-')
+plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Origin', color='royalblue', hatch='/')
+plt.bar(x - width / 8, unl_br, width=0.148, label='BFU', color='gold', hatch='**')
+plt.bar(x + width / 8, unl_self_r, width=0.148, label='BFU-SS', color='green', hatch='++')
+plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', color='red', hatch='-')
+
+
 # Add some text for labels, title and custom x-axis tick labels, etc.
 plt.ylabel('Running Time (s)', fontsize=20)
 # ax.set_title('Performance of Different Users n')

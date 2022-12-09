@@ -12,12 +12,12 @@ x=[1, 2, 3, 4, 5]
 # attack_for_plt=[0, 0.3524, 0, 0.1762, 0.1762]
 # basic_for_plt=[99.8, 99.8, 99.8, 99.8, 99.8]
 
-labels = ['0.01', '0.05', '0.1', '0.15', '0.2']
+labels = ['0.001', '0.01', '0.1', '1', '10']
 unl_fr = [0.1, 0.1 , 0.1, 0.1, 0.1]
-unl_br = [1.5, 14, 8., 5.9, 9.6]
-unl_self_r = [1.5, 5.7, 9.7, 4.3, 4.7]
+unl_br = [19.4, 8.5, 8., 6.7, 0]
+unl_self_r = [33.8, 9.5, 9.7, 7.7, 0.3]
 unl_hess_r = [8.04,  8.04, 8.04, 8.04, 8.04]
-
+org =[88.3, 88.8, 88.2,88.3,88.9]
 
 
 
@@ -25,7 +25,9 @@ plt.figure()
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 plt.plot(x, unl_br, color='orange',  marker='x',  label='BFU',linewidth=4,  markersize=10)
 plt.plot(x, unl_self_r, color='g',  marker='*',  label='BFU-SS',linewidth=4, markersize=10)
-plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
+#plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
+plt.plot(x, org, color='cyan',  marker='s',  label='Origin',linewidth=4, markersize=10)
+
 # plt.plot(x, y_sa03, color='r',  marker='2',  label='AAAI21 A_acc, pr=0.3',linewidth=3, markersize=8)
 # plt.plot(x, y_sa05, color='darkblue',  marker='4',  label='AAAI21 A_acc, pr=0.5',linewidth=3, markersize=8)
 # plt.plot(x, y_ma03, color='darkviolet',  marker='3',  label='FedMC A_acc, pr=0.3',linewidth=3, markersize=8)
@@ -36,7 +38,7 @@ plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
 plt.ylabel('Backdoor Accuracy (%)' ,fontsize=20)
-my_y_ticks = np.arange(0 ,20,3)
+my_y_ticks = np.arange(0 ,101,20)
 plt.yticks(my_y_ticks,fontsize=20)
 
 plt.xlabel('$\\beta$' ,fontsize=20)
