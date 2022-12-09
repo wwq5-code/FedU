@@ -18,7 +18,7 @@ numpy
 python /Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
 ```
 
-2. To run the BFU and BFU-SS on MNIST
+2. To run the BFU and BFU-SS on CIFAR10
 ```
 python /Federated_learning/BackdoorFedUnl/backdoorUnl_cifar/CIFAR_KLD_conve.py
 ```
