@@ -22,7 +22,7 @@ unl_hess_r = [97.5,  97.5, 97.5, 97.5, 97.5]
 
 
 
-plt.figure()
+plt.figure(figsize=(8, 5.3))
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 plt.plot(x, unl_br, color='orange',  marker='x',  label='BFU',linewidth=4,  markersize=10)
 plt.plot(x, unl_self_r, color='g',  marker='*',  label='BFU-SS',linewidth=4, markersize=10)
@@ -37,7 +37,7 @@ plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
 plt.ylabel('Accuracy (%)' ,fontsize=20)
-my_y_ticks = np.arange(90 ,101,2)
+my_y_ticks = np.arange(88 ,101,2)
 plt.yticks(my_y_ticks,fontsize=20)
 
 plt.xlabel('$\\beta$' ,fontsize=20)

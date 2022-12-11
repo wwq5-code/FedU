@@ -31,7 +31,7 @@ for i in range(len(unl_self_r)):
 for i in range(len(unl_hess_r)):
     unl_hess_r[i] = unl_hess_r[i] *100
 
-plt.figure()
+plt.figure(figsize=(8, 5.3))
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 plt.plot(x, unl_br, color='orange',  marker='x',  label='BFU',linewidth=4,  markersize=10)
 plt.plot(x, unl_self_r, color='g',  marker='*',  label='BFU-SS',linewidth=4, markersize=10)

@@ -21,8 +21,7 @@ unl_hess_r = [78.6,  78.6, 78.6, 78.6, 78.6]
 
 
 
-
-plt.figure()
+plt.figure(figsize=(8, 5.3))
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 plt.plot(x, unl_br, color='orange',  marker='x',  label='BFU',linewidth=4,  markersize=10)
 plt.plot(x, unl_self_r, color='g',  marker='*',  label='BFU-SS',linewidth=4, markersize=10)

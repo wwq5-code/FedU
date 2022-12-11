@@ -15,7 +15,7 @@ width = 0.6  # the width of the bars
 # ldp = np.around(ldp,0)
 
 
-plt.subplots()
+plt.subplots(figsize=(8, 5.3))
 plt.bar(x - width / 4, unl_fr, width=0.148, label='Origin', color='royalblue',  hatch='/')
 plt.bar(x - 0, unl_br, width=0.148, label='BFU', color='gold', hatch='**')
 plt.bar(x + width / 4, unl_self_r, width=0.148, label='BFU-SS', color='green', hatch='++')
