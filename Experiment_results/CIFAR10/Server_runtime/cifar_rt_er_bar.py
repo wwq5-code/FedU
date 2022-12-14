@@ -6,7 +6,7 @@ labels = ['1%', '5%', '10%', '15%', '20%']
 unl_fr = [40*2*2.76, 40*2*2.76, 40*2*2.76, 40*2*2.76, 40*2*2.76]
 unl_br = [40*2*2.76, 40*2*2.76, 6*2*2.76, 8*2*2.76, 4*2*2.76]
 unl_self_r = [40*2*2.76, 39*2*2.76, 10*2*2.76, 12*2*2.76, 6*2*2.76]
-unl_hess_r = [40*2*2.76,  40*2*2.76, 18*2*2.76, 40*2*2.76, 40*2*2.76]
+unl_hess_r = [40*2*2.76,  40*2*2.76, 40*2*2.76, 40*2*2.76, 40*2*2.76]
 
 x = np.arange(len(labels))  # the label locations
 width = 0.6  # the width of the bars
@@ -45,5 +45,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('cifar_rt_er_bar.png', dpi=400)
+plt.savefig('cifar_rt_er_bar.png', dpi=200)
 plt.show()

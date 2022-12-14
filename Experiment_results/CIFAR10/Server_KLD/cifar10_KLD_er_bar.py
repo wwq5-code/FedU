@@ -44,5 +44,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('cifar_KLD_er_bar.png', dpi=400)
+plt.savefig('cifar_KLD_er_bar.png', dpi=200)
 plt.show()

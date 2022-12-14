@@ -16,7 +16,7 @@ labels = ['1%', '5%', '10%', '15%', '20%']
 unl_fr = [0.2, 0.5 , 0.2, 0.2, 0.2]
 unl_br = [30.3, 40, 8., 1.5, 0.08]
 unl_self_r = [25.8, 3.9, 9.7, 1.6, 0.0]
-unl_hess_r = [11,  16, 8.04, 17, 29.3]
+unl_hess_r = [11,  16, 18.04, 17, 29.3]
 org = [67.9, 75.6, 86.4,89.2, 90.3]
 
 
@@ -51,5 +51,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('cifar_backacc_er_curve.png', dpi=400)
+plt.savefig('cifar_backacc_er_curve.png', dpi=200)
 plt.show()

@@ -6,7 +6,7 @@ labels = ['1', '2', '3', '4', '5']
 unl_fr = [40*2*2.76, 40*2*2.76, 40*2*2.76, 40*2*2.76, 40*2*2.76]
 unl_br = [40*2*2.76, 40*2*2.76, 6*2*2.76, 1*2*2.76, 1*2*2.76]
 unl_self_r = [40*2*2.76, 40*2*2.76, 10*2*2.76, 3*2*2.76, 1*2*2.76]
-unl_hess_r = [40*2*2.76,  40*2*2.76, 18*2*2.76, 22*2*2.76, 15*2*2.76]
+unl_hess_r = [40*2*2.76,  40*2*2.76, 40*2*2.76, 22*2*2.76, 15*2*2.76]
 
 x = np.arange(len(labels))  # the label locations
 width = 0.6  # the width of the bars
@@ -43,5 +43,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('cifar_rt_ke_bar.png', dpi=400)
+plt.savefig('cifar_rt_ke_bar.png', dpi=200)
 plt.show()

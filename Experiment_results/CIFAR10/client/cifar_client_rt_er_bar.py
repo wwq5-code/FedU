@@ -3,7 +3,7 @@ import numpy as np
 
 # user num = 50
 labels = ['1%', '5%', '10%', '15%', '20%']
-unl_fr = [1*2*2.76*0.99, 1*2*2.76*0.95, 1*2*2.76*0.9, 1*2*2.76*0.85, 1*2*2.76*0.8]
+unl_fr = [1*2*2.76*0.99, 1*2*2.76*0.99, 1*2*2.76*0.99, 1*2*2.76*0.99, 1*2*2.76*0.99]
 unl_br = [0.01*13*2.76, 0.05*6*2.76, 0.1*5*2.76, 0.15*4*2.76, 0.2*3*2.76]
 unl_self_r = [0.02*13*2.76, 0.1*7*2.76, 0.2*5*2.76, 0.3*4*2.76, 0.4*3*2.76]
 unl_hess_r = [1*2*2.76,  1*2*2.76, 2*2.76, 2*2.76, 2*2.76]
@@ -44,5 +44,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('cifar_client_rt_er_bar.png', dpi=400)
+plt.savefig('cifar_client_rt_er_bar.png', dpi=200)
 plt.show()

@@ -3,10 +3,10 @@ import numpy as np
 
 # user num = 50
 labels = ['1%', '5%', '10%', '15%', '20%']
-unl_fr = [1*10*0.22*0.99, 1*10*0.22*0.95, 1*10*0.22*0.90, 1*10*0.22*0.85, 1*10*0.22*0.8]
+unl_fr = [1*10*0.22*0.99, 1*10*0.22*0.99, 1*10*0.22*0.99, 1*10*0.22*0.99, 1*10*0.22*0.99]
 unl_br = [0.01*6*0.22, 0.05*10*0.22, 0.1*4*0.22, 0.15*4*0.22, 0.2*3*0.22]
 unl_self_r = [0.02*7*0.22, 0.1*10*0.22, 0.2*4*0.22, 0.3*4*0.22, 0.4*3*0.22]
-unl_hess_r = [1*3*0.22,  1*8*0.22, 9*0.22, 10*0.22, 10*0.22]
+unl_hess_r = [0.1*3*0.22 + 1*0.22,  0.1*8*0.22+ 1*0.22, 0.1*9*0.22+ 1*0.22, 0.1*10*0.22+ 1*0.22, 0.1*10*0.22+ 1*0.22]
 
 x = np.arange(len(labels))  # the label locations
 width = 0.6  # the width of the bars
@@ -45,5 +45,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('mnist_client_rt_er_bar.png', dpi=400)
+plt.savefig('mnist_client_rt_er_bar.png', dpi=200)
 plt.show()
