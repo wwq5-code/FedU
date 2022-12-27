@@ -1,6 +1,6 @@
-# BFU
+# IBFU
 
-# Bayesain Federated Unlearning and BFU-SS
+# Information Bottleneck Federated Unlearning (IBFU) and IBFU-SS
 
 ### Prerequisites
 
@@ -13,22 +13,22 @@ numpy
 
 ### Running the experiments
 
-1. To run the BFU and BFU-SS on MNIST
+1. To run the IBFU and IBFU-SS on MNIST
 ```
 python /Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
 ```
 
 2. To run the BFU and BFU-SS on CIFAR10
 ```
-python /Federated_learning/BackdoorFedUnl/backdoorUnl_cifar/CIFAR_KLD_conve.py
+python /Federated_learning/BackdoorFedUnl/backdoorUnl_cifar/CIFAR10_3u_10e.py
 ```
 
-3. To run the HFU on MNIST
+3. To run our reproduced HFU on MNIST
 ```
 python /Federated_learning/Unl-subtract_hessian/backdoor_FedHessian.py
 ```
 
-4. To run the HFU on CIFAR
+4. To run our reproduced HFU on CIFAR
 ```
-python /Federated_learning/Unl-subtract_hessian/Hessian_backddor_CIFAR/cifar_hessian_u/backdoor_FedHessian_er01_cifar.py
+python /Federated_learning/Unl-subtract_hessian/Hessian_backddor_CIFAR/cifar_hessian_u/hessian_cifar_temp.py
 ```

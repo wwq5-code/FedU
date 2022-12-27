@@ -239,6 +239,7 @@ def init_vibi(dataset):
         forgetter = LinearModel(n_feature=8*8*8, n_output=3 * 32 * 32)
         lr = 3e-4
 
+
     vibi = VIBI(explainer, approximator, forgetter, k=k, num_samples=args.num_samples)
     vibi.to(args.device)
     return vibi, lr
@@ -513,8 +514,9 @@ def test_accuracy(model, datatest, args, name='test'):
     data_loader = DataLoader(datatest, batch_size=args.bs)
     for x, y in data_loader:
         x, y = x.to(args.device), y.to(args.device)
-        x = x.view(x.size(0), -1)
-        out = model(x, mode='test')
+        if args.dataset == 'MNIST':
+            x = x.view(x.size(0), -1)
+        out = model(x, mode='cifar_test')
         if y.ndim == 2:
             y = y.argmax(dim=1)
         num_correct += (out.argmax(dim=1) == y).sum().item()
@@ -1533,11 +1535,34 @@ class LocalUpdate(object):
         net.eval()
         return net, optimizer_retrain, KL_fr, KL_nipsr
 
+    @staticmethod
+    def calculate_hs_p(KLD_mean2, H_p_q2, optimizer_hessian, vibi_f_hessian):
+        loss = args.beta * KLD_mean2 + H_p_q2  # + BCE / (args.local_bs * 28 * 28)
+        optimizer_hessian.zero_grad()
+
+        # loss.backward()
+        # log_probs = net(images)
+        # loss = self.loss_func(log_probs, labels)
+
+        loss.backward(create_graph=True)
+
+        optimizer_hs = AdaHessian(vibi_f_hessian.parameters())
+        # optimizer_hs.get_params()
+        optimizer_hs.zero_hessian()
+        optimizer_hs.set_hessian()
+
+        params_with_hs = optimizer_hs.get_params()
+        # optimizer_hessian.step()
+        optimizer_hessian.zero_grad()
+        vibi_f_hessian.zero_grad()
+
+        return params_with_hs
+
     def unl_train(self, net, idx, args):
 
         self.remaining_loader = DataLoader(self.remaining_set, batch_size=self.remaining_set.__len__(), shuffle=True)
         self.erased_loader = DataLoader(self.erasing_set, batch_size=self.args.local_bs, shuffle=True)
-
+        self.remaining_loader2 = DataLoader(self.remaining_set, batch_size=args.local_bs, shuffle=True)
         net.train()
         # train and update
         optimizer = torch.optim.Adam(net.parameters(), lr=args.lr)
@@ -1586,25 +1611,38 @@ class LocalUpdate(object):
             # print(iter)
             temp_acc = []
             temp_back = []
-            for (images, labels), (images2, labels2) in zip(self.erased_loader, self.remaining_loader):
-            # for batch_idx, (images, labels) in enumerate(self.erased_loader):
-                images, labels = images.to(self.args.device), labels.to(self.args.device)
-                B,c,h,w = images.shape
-                #print(B,h,w)
-                images  = images.reshape((B, -1))
+            for (images, labels), (images2, labels2) in zip(self.erased_loader, self.remaining_loader2):
+                # for batch_idx, (images, labels) in enumerate(self.erased_loader):
+                images, labels = images.to(args.device), labels.to(args.device)
+                B, c, h, w = images.shape
+                # print(B,h,w)
+                if args.dataset == 'MNIST':
+                    images = images.reshape((B, -1))
 
-                images2, labels2 = images2.to(self.args.device), labels2.to(self.args.device)
+                images2, labels2 = images2.to(args.device), labels2.to(args.device)
                 B, c, h, w = images2.shape
-
-                images2 = images2.reshape((B, -1))
+                if args.dataset == 'MNIST':
+                    images2 = images2.reshape((B, -1))
 
                 net.zero_grad()
-                logits_z, logits_y, x_hat, mu, logvar = net(images, mode='forgetting')  # (B, C* h* w), (B, N, 10)
+                logits_z, logits_y, x_hat, mu, logvar = net(images,
+                                                                       mode='forgetting')  # (B, C* h* w), (B, N, 10)
                 logits_z2, logits_y2, x_hat2, mu2, logvar2 = net(images2, mode='forgetting')
+
+                ##remaining dataset used to unlearn
+
                 H_p_q = self.loss_func(logits_y, labels)
                 KLD_element = mu.pow(2).add_(logvar.exp()).mul_(-1).add_(1).add_(logvar).cuda()
                 KLD = torch.sum(KLD_element).mul_(-0.5).cuda()
                 KLD_mean = torch.mean(KLD_element).mul_(-0.5).cuda()
+
+                H_p_q2 = self.loss_func(logits_y2, labels2)
+                KLD_element2 = mu2.pow(2).add_(logvar2.exp()).mul_(-1).add_(1).add_(logvar2).cuda()
+                KLD_mean2 = torch.mean(KLD_element2).mul_(-0.5).cuda()
+
+                params_with_hs = LocalUpdate.calculate_hs_p(KLD_mean2, H_p_q2, optimizer, net)
+
+
 
                 loss = args.beta * KLD_mean + H_p_q  # + BCE / (args.local_bs * 28 * 28)
                 optimizer.zero_grad()
@@ -1613,16 +1651,7 @@ class LocalUpdate(object):
                 # log_probs = net(images)
                 # loss = self.loss_func(log_probs, labels)
 
-                #loss.backward(create_graph=True)
-                #loss.backward()
-
-                # new_p = optimizer_hs.step()
-                # for name, p in net.named_parameters():
-                #     print(name, p.grad.data)
-                #     if p.grad.data==None:
-                #         break
-
-                i=0
+                i = 0
                 for p_hs, p in zip(params_with_hs, net.parameters()):
                     i = i + 1
                     # if i==1:
@@ -1630,18 +1659,20 @@ class LocalUpdate(object):
                     # print(p_hs.hess)
                     # break
                     temp_hs = torch.tensor(p_hs.hess)
-                    #temp_hs = temp_hs.__add__(args.lr)
-                    #p.data = p.data.addcdiv_(exp_avg, denom, value=-step_size * 10000)
+                    # temp_hs = temp_hs.__add__(args.lr)
+                    # p.data = p.data.addcdiv_(exp_avg, denom, value=-step_size * 10000)
 
-                    #print(p.data)
-                    #p.data = p_hs.data.addcdiv_(exp_avg, denom, value=step_size * args.lr)
-                    if p.grad!=None:
+                    # print(p.data)
+                    # p.data = p_hs.data.addcdiv_(exp_avg, denom, value=step_size * args.lr)
+                    if p.grad != None:
                         exp_avg, denom, step_size = LocalUpdate.hessian_unl_update(p, temp_hs, args, i)
-                        p.data = p.data.addcdiv_(exp_avg, denom, value=step_size* args.hessian_rate)
-                        #p.data =p.data + torch.div(p.grad.data, temp_hs) * args.lr #torch.mul(p_hs.hess, p.grad)*10
-                        print(p.grad.data.shape)
+                        # print(exp_avg)
+                        # print(denom)
+                        p.data = p.data.addcdiv_(exp_avg, denom, value=args.hessian_rate)
+                        # p.data =p.data + torch.div(p.grad.data, temp_hs) * args.lr #torch.mul(p_hs.hess, p.grad)*10
+                        # print(p.grad.data.shape)
                     else:
-                        p.data =p.data
+                        p.data = p.data
 
 
                 #optimizer.step()
@@ -1655,6 +1686,8 @@ class LocalUpdate(object):
                 if batch_idx % 1000 == 0 and iter==0:
                     print("fl_acc2", fl_acc2, 'backdoor',fl_acc, "loss", loss.item(), "idx", idx)
                 batch_loss.append(loss.item())
+                if fl_acc < 0.02:
+                    break
 
             acc_list.append(np.mean(temp_acc))
             backdoor_list.append(np.mean(temp_back))
@@ -2188,7 +2221,7 @@ def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_te
         backdoor_acc_list.append(backdoor_acc)
         # interpolate_valid_acc = torch.linspace(valid_acc_old, valid_acc, steps=len(train_loader)).tolist()
         print("backdoor_acc", backdoor_acc)
-        if backdoor_acc < 0.1:
+        if backdoor_acc < 0.08:
             break
         # print("epoch: ", iter)
         # acc_temp, poison_acc_temp = acc_evaluation_org(unlearning_temp_net, dataset_test, args)
@@ -2212,6 +2245,7 @@ def FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local
 
     acc_test = []
     poison_acc = []
+    backdoor_acc_list = []
 
 
     print("dataset_train", len(dataset_train))
@@ -2255,12 +2289,15 @@ def FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local
         # interpolate_valid_acc = torch.linspace(valid_acc_old, valid_acc, steps=len(train_loader)).tolist()
         print("backdoor_acc", backdoor_acc)
         acc_test.append(valid_acc)
+        backdoor_acc_list.append(backdoor_acc)
+
         #acc_temp, poison_acc_temp = acc_evaluation_org(net_glob, dataset_test, args)
         # acc_test.append(acc_temp)
         # poison_acc.append(poison_acc_temp)
         # print("org_acc ", acc_test)
         # print("poison_acc_list:", poison_acc)
 
+    print("backdoor_acc", backdoor_acc_list)
     print("global train acc",acc_test)
     net_glob.eval()
     return net_glob
@@ -2533,50 +2570,50 @@ def clean_FL(args):
 
     # print("KL_fr", KL_fr)
     # print("KL_nipsr", KL_nipsr)
-
-    print("start retrain")
-    retrian_net, KL_fr, KL_nipsr = FL_retrain(retrian_net, net_glob, unlearn_nips, args, dataset_train, dataset_test, dict_users, idxs_local_dict, poison_testset, retrain_epoch= args.epochs, train_type='retrain')
-
-    # print("start retrain2")
-    # retrian_net2, lr = init_vibi(args.dataset)
-    # retrian_net2.to(args.device)
-    # retrian_net2, KL_fr, KL_self_r = FL_retrain(retrian_net2, net_glob, unlearn_self, args, dataset_train, dataset_test, dict_users, idxs_local_dict,poison_testset, retrain_epoch= args.epochs, train_type='retrain')
-
-
-    glob_w = net_glob.state_dict()
-    diff_grad = net_glob.state_dict()
-    for k in diff_grad.keys():
-        diff_grad[k] = diff_grad[k] - diff_grad[k]
-    retrain_net_w = retrian_net.state_dict()
-    distance = 0
-    for k in glob_w.keys():
-        diff_grad[k] = retrain_net_w[k] - glob_w[k]
-        distance += torch.norm(diff_grad[k], p=2)
-        print("retrain-learning_distance", distance)
-
-    diff_grad = unlearn_nips.state_dict()
-    for k in diff_grad.keys():
-        diff_grad[k] = diff_grad[k] - diff_grad[k]
-    unlearning_net_w = unlearn_nips.state_dict()
-    distance = 0
-    for k in glob_w.keys():
-        diff_grad[k] = retrain_net_w[k] - unlearning_net_w[k]
-        distance += torch.norm(diff_grad[k], p=2)
-        print("retrain_unlearning_distance", distance)
-
+    #
+    # print("start retrain")
+    # retrian_net, KL_fr, KL_nipsr = FL_retrain(retrian_net, net_glob, unlearn_nips, args, dataset_train, dataset_test, dict_users, idxs_local_dict, poison_testset, retrain_epoch= args.epochs, train_type='retrain')
+    #
+    # # print("start retrain2")
+    # # retrian_net2, lr = init_vibi(args.dataset)
+    # # retrian_net2.to(args.device)
+    # # retrian_net2, KL_fr, KL_self_r = FL_retrain(retrian_net2, net_glob, unlearn_self, args, dataset_train, dataset_test, dict_users, idxs_local_dict,poison_testset, retrain_epoch= args.epochs, train_type='retrain')
+    #
+    #
+    # glob_w = net_glob.state_dict()
+    # diff_grad = net_glob.state_dict()
+    # for k in diff_grad.keys():
+    #     diff_grad[k] = diff_grad[k] - diff_grad[k]
+    # retrain_net_w = retrian_net.state_dict()
+    # distance = 0
+    # for k in glob_w.keys():
+    #     diff_grad[k] = retrain_net_w[k] - glob_w[k]
+    #     distance += torch.norm(diff_grad[k].float(), p=2)
+    # print("retrain-learning_distance", distance)
+    #
     # diff_grad = unlearn_nips.state_dict()
     # for k in diff_grad.keys():
     #     diff_grad[k] = diff_grad[k] - diff_grad[k]
-    # unlearning_net_self = unlearn_self.state_dict()
-    # retrain_net_w = retrian_net2.state_dict()
+    # unlearning_net_w = unlearn_nips.state_dict()
     # distance = 0
     # for k in glob_w.keys():
-    #     diff_grad[k] = retrain_net_w[k] - unlearning_net_self[k]
-    #     distance += torch.norm(diff_grad[k], p=2)
-    #     print("retrain_unlearning_self_distance", distance)
-
-    print("KL_fr", np.mean(KL_fr), KL_fr)
-    print("KL_nipsr", np.mean(KL_nipsr), KL_nipsr)
+    #     diff_grad[k] = retrain_net_w[k] - unlearning_net_w[k]
+    #     distance += torch.norm(diff_grad[k].float(), p=2)
+    # print("retrain_unlearning_distance", distance)
+    #
+    # # diff_grad = unlearn_nips.state_dict()
+    # # for k in diff_grad.keys():
+    # #     diff_grad[k] = diff_grad[k] - diff_grad[k]
+    # # unlearning_net_self = unlearn_self.state_dict()
+    # # retrain_net_w = retrian_net2.state_dict()
+    # # distance = 0
+    # # for k in glob_w.keys():
+    # #     diff_grad[k] = retrain_net_w[k] - unlearning_net_self[k]
+    # #     distance += torch.norm(diff_grad[k], p=2)
+    # #     print("retrain_unlearning_self_distance", distance)
+    #
+    # print("KL_fr", np.mean(KL_fr), KL_fr)
+    # print("KL_nipsr", np.mean(KL_nipsr), KL_nipsr)
     # print("KL_self_r", np.mean(KL_self_r), KL_self_r)
 
 
@@ -2609,13 +2646,13 @@ if __name__ == '__main__':
     args.lr = 0.001
     args.erased_size = 1500 #120
     args.poison_portion = 0.0
-    args.erased_portion = 0.5
+    args.erased_portion = 0.3
     args.erased_local_r = 0.1
     ## in unlearning, we should make the unlearned model first be backdoored and then forget the trigger effect
     args.unlearn_learning_rate = 1.5
     args.self_sharing_rate = 1.5
     args.unl_conver_r=2
-    args.hessian_rate=10
+    args.hessian_rate=0.0001
     print('args.beta',args.beta, 'args.lr', args.lr)
     print('args.erased_portion', args.erased_portion, 'args.erased_local_r',args.erased_local_r)
     print('args.hessian_rate',args.hessian_rate, 'args.self_sharing_rate',args.self_sharing_rate)

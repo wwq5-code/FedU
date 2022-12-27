@@ -1026,8 +1026,8 @@ class LocalUpdate(object):
             elif self.args.dataset=='CIFAR10':
                 data_reshape = self.train_splite.data.reshape(len(self.train_splite.data), 3, 32, 32)
             self.poison_trainset = Data.TensorDataset(data_reshape, self.train_splite.targets)
-            self.remaining_set = self.poison_trainset #Data.TensorDataset(data_reshape, self.train_splite.targets)
-            #self.erasing_set = self.pure_backdorred_set
+            self.remaining_set = self.poison_trainset # Data.TensorDataset(data_reshape, self.train_splite.targets)
+            # self.erasing_set = self.pure_backdorred_set
 
 
 
