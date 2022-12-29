@@ -20,8 +20,8 @@ unl_self_r = [80.05, 80.18, 79.69, 79.75, 79.61]
 unl_hess_r = [78.6,  78.6, 78.6, 78.6, 78.6]
 
 
-
-plt.figure(figsize=(8, 5.3))
+plt.figure()
+#plt.figure(figsize=(8, 5.3))
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 plt.plot(x, unl_br, color='orange',  marker='x',  label='IBFU',linewidth=4,  markersize=10)
 plt.plot(x, unl_self_r, color='g',  marker='*',  label='IBFU-SS',linewidth=4, markersize=10)
