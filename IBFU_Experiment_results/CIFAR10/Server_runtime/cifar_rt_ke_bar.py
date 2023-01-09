@@ -18,8 +18,8 @@ width = 0.6  # the width of the bars
 plt.figure()
 #plt.subplots(figsize=(8, 5.3))
 plt.bar(x - width / 2 - width / 8 + width / 8, unl_fr, width=0.168, label='Retrain', color='dodgerblue', hatch='/')
-plt.bar(x - width / 8 - width / 16 , unl_br, width=0.168, label='IBFU', color='orange', hatch='\\')
-plt.bar(x + width / 8, unl_self_r, width=0.168, label='IBFU-SS', color='g', hatch='x')
+plt.bar(x - width / 8 - width / 16 , unl_br, width=0.168, label='RFU', color='orange', hatch='\\')
+plt.bar(x + width / 8, unl_self_r, width=0.168, label='RFU-SS', color='g', hatch='x')
 plt.bar(x + width / 2 - width / 8 + width / 16, unl_hess_r, width=0.168, label='HFU', color='tomato', hatch='-')
 
 

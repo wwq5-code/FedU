@@ -34,8 +34,8 @@ for i in range(5):
 
 
 plt.figure()
-plt.plot(x, y_bfu_acc, color='orange',  marker='x',  label='IBFU',linewidth=4,  markersize=10)
-plt.plot(x, y_ss_acc, color='g',  marker='*',  label='IBFU-SS',linewidth=4, markersize=10)
+plt.plot(x, y_bfu_acc, color='orange',  marker='x',  label='RFU',linewidth=4,  markersize=10)
+plt.plot(x, y_ss_acc, color='g',  marker='*',  label='RFU-SS',linewidth=4, markersize=10)
 #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 plt.plot(x, y_hfu_acc, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
 

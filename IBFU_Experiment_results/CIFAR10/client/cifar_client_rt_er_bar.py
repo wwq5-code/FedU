@@ -17,8 +17,8 @@ width = 0.6  # the width of the bars
 
 plt.subplots()
 plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Origin', color='royalblue', hatch='/')
-plt.bar(x - width / 8, unl_br, width=0.148, label='IBFU', color='gold', hatch='**')
-plt.bar(x + width / 8, unl_self_r, width=0.148, label='IBFU-SS', color='green', hatch='++')
+plt.bar(x - width / 8, unl_br, width=0.148, label='RFU', color='gold', hatch='**')
+plt.bar(x + width / 8, unl_self_r, width=0.148, label='RFU-SS', color='green', hatch='++')
 plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', color='red', hatch='-')
 
 

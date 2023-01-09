@@ -23,8 +23,8 @@ org =[88.3, 88.8, 88.2,88.3,88.9]
 plt.figure()
 #plt.figure(figsize=(8, 5.3))
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
-plt.plot(x, unl_br, color='orange',  marker='x',  label='IBFU',linewidth=4,  markersize=10)
-plt.plot(x, unl_self_r, color='g',  marker='*',  label='IBFU-SS',linewidth=4, markersize=10)
+plt.plot(x, unl_br, color='orange',  marker='x',  label='RFU',linewidth=4,  markersize=10)
+plt.plot(x, unl_self_r, color='g',  marker='*',  label='RFU-SS',linewidth=4, markersize=10)
 #plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
 plt.plot(x, org, color='cyan',  marker='s',  label='Origin',linewidth=4, markersize=10)
 
