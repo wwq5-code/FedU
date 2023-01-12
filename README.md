@@ -1,6 +1,6 @@
 # CRFU
 
-# Information Bottleneck Federated Unlearning (IBFU) and IBFU-SS
+# Client-side Representation-forgetting Federated Unlearning (CRFU) and CRFU-SS
 
 ### Prerequisites
 
