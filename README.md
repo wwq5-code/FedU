@@ -15,7 +15,7 @@ numpy
 
 1. To run the CRFU and CRFU-SS on MNIST
 ```
-python /Users/wwq/PycharmProjects/MCFederatedUnlearning/Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
+python /Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
 ```
 
 2. To run the CRFU and CRFU-SS on CIFAR10
