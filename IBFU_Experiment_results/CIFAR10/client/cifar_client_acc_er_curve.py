@@ -15,7 +15,7 @@ x=[1, 2, 3, 4, 5]
 labels = ['2%', '4%', '6%', '8%', '10%']
 unl_fr = [99.9, 99.9, 99.9, 99.9, 99.9]
 unl_br = [93.99, 90.66, 86.39, 84.99, 82]
-unl_self_r = [97.99, 94.99, 93.39, 91.37, 90]
+unl_self_r = [97.99, 97.99, 96.39, 96.37, 95.9999]
 unl_hess_r = [96.2,  92.14, 90.0, 88.016, 84.99]
 
 
@@ -36,7 +36,7 @@ plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
 plt.ylabel('Accuracy (%)' ,fontsize=20)
-my_y_ticks = np.arange(0 ,101,20)
+my_y_ticks = np.arange(80 ,101,5)
 plt.yticks(my_y_ticks,fontsize=20)
 plt.xlabel('$\it{EDR}$' ,fontsize=20)
 

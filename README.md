@@ -1,4 +1,4 @@
-# IBFU
+# CRFU
 
 # Information Bottleneck Federated Unlearning (IBFU) and IBFU-SS
 
@@ -13,14 +13,14 @@ numpy
 
 ### Running the experiments
 
-1. To run the IBFU and IBFU-SS on MNIST
+1. To run the CRFU and CRFU-SS on MNIST
 ```
-python /Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
+python /Users/wwq/PycharmProjects/MCFederatedUnlearning/Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
 ```
 
-2. To run the IBFU and IBFU-SS on CIFAR10
+2. To run the CRFU and CRFU-SS on CIFAR10
 ```
-python /Federated_learning/BackdoorFedUnl/backdoorUnl_cifar/CIFAR10_3u_10e.py
+python /Federated_learning/BackdoorFedUnl/backdoorUnl_cifar_er/CIFAR10_er02_3ke.py
 ```
 
 3. To run our reproduced and improved HFU on MNIST

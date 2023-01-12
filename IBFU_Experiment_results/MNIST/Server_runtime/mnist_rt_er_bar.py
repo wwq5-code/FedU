@@ -3,10 +3,10 @@ import numpy as np
 
 # user num = 50
 labels = ['2%', '4%', '6%', '8%', '10%']
-unl_fr = [10*10*0.22 , 10*10*0.22, 10*10*0.22 , 10*10*0.22 , 10*10*0.22   ]
-unl_br = [4*10*0.22 , 4*10*0.22, 4*10*0.22, 3*10*0.22, 3*10*0.22  ]
-unl_self_r = [3*10*0.22, 3*10*0.22, 3*10*0.22, 2*10*0.22, 2*10*0.22 ]
-unl_hess_r = [3*10*0.22,  3*10*0.22, 3*10*0.22, 2*10*0.22, 2*10*0.22 ]
+unl_fr = [20*10*0.22 , 20*10*0.22, 20*10*0.22 , 20*10*0.22 , 20*10*0.22   ]
+unl_br = [10*10*0.22 , 9*10*0.22, 8*10*0.22, 8*10*0.22, 6*10*0.22  ]
+unl_self_r = [7*10*0.22, 6*10*0.22, 5*10*0.22, 4*10*0.22, 4*10*0.22 ]
+unl_hess_r = [9*10*0.22,  9*10*0.22, 6*10*0.22, 4*10*0.22, 4*10*0.22 ]
 
 x = np.arange(len(labels))  # the label locations
 width = 0.6  # the width of the bars
@@ -30,7 +30,7 @@ plt.ylabel('Running Time (s)', fontsize=20)
 plt.xticks(x, labels, fontsize=20)
 # ax.set_xticklabels(labels,fontsize=15)
 
-my_y_ticks = np.arange(0, 26, 4)
+my_y_ticks = np.arange(0, 26*2, 8)
 plt.yticks(my_y_ticks, fontsize=20)
 # ax.set_yticklabels(my_y_ticks,fontsize=15)
 

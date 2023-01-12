@@ -1255,28 +1255,31 @@ class LocalUpdate(object):
         user_acc_list = []
         user_unlearn_list=[]
         convergence = 0
+        batch_acc = []
+        batch_b_acc = []
         for epoch in range(self.args.local_ep+40):
             step_start = epoch * len(self.ldr_train)
-            net, optimizer, acc_list, unlearned_acc_list = LocalUpdate.unlearning_nips(net, optimizer, self.erased_loader, remaining_loader, self.loss_func, reconstruction_function, net_temp, args ,epoch, idx, train_type)
+            net, optimizer, acc_list, unlearned_acc_list, batch_acc, batch_b_acc = LocalUpdate.unlearning_nips(net, optimizer, self.erased_loader, remaining_loader, self.loss_func, reconstruction_function, net_temp, args ,epoch, idx, train_type, batch_acc, batch_b_acc)
             user_acc_list.append(np.mean(acc_list))
             user_unlearn_list.append(np.mean(unlearned_acc_list))
             if np.mean(unlearned_acc_list) < 0.1:
                 convergence = convergence + 1
-            if convergence >= args.unl_conver_r and train_type=='unlearn_nips': # if accuracy on unlearned dataset performs lower than random, we think it converges
-                print("unlearn finish",epoch, np.mean(unlearned_acc_list))
-                print("user_unlearn_list", user_unlearn_list)
-                break
-            if convergence >= args.unl_conver_r and train_type=='unlearn_vib': # if accuracy on unlearned dataset performs lower than random, we think it converges
-                print("unlearn vib finish",epoch, np.mean(unlearned_acc_list))
-                print("user_unlearn_list", user_unlearn_list)
-                break
-            if convergence >= args.unl_conver_r and train_type=='self-sharing': # if accuracy on unlearned dataset performs lower than random, we think it converges
-                print("unlearn finish",epoch, np.mean(unlearned_acc_list))
-                print("user_unlearn_list", user_unlearn_list)
-                break
+            # if convergence >= args.unl_conver_r and train_type =='unlearn_nips': # if accuracy on unlearned dataset performs lower than random, we think it converges
+            #     print("unlearn finish",epoch, np.mean(unlearned_acc_list))
+            #     print("user_unlearn_list", user_unlearn_list)
+            #     break
+            # if convergence >= args.unl_conver_r and train_type =='unlearn_vib': # if accuracy on unlearned dataset performs lower than random, we think it converges
+            #     print("unlearn vib finish",epoch, np.mean(unlearned_acc_list))
+            #     print("user_unlearn_list", user_unlearn_list)
+            #     break
+            # if convergence >= args.unl_conver_r and train_type =='self-sharing': # if accuracy on unlearned dataset performs lower than random, we think it converges
+            #     print("unlearn finish",epoch, np.mean(unlearned_acc_list))
+            #     print("user_unlearn_list", user_unlearn_list)
+            #     break
             # net.eval()
         if idx in self.erased_perm:
-            print("user_acc_list", user_acc_list)
+            print("batch_acc", batch_acc)
+            print("batch_b_acc", batch_b_acc)
         return net, net.state_dict()
 
     @staticmethod
@@ -1291,8 +1294,10 @@ class LocalUpdate(object):
 
             # print("x org",x)
             # break
-            x = x.view(x.size(0), -1)
-            logits_z, logits_y, x_hat, mu, logvar = model(x, mode='forgetting')  # (B, C* h* w), (B, N, 10)
+            if args.dataset =='MNIST':
+                x = x.view(x.size(0), -1)
+
+            logits_z, logits_y, x_hat, mu, logvar = model(x, mode='cifar_forgetting')  # (B, C* h* w), (B, N, 10)
             H_p_q = loss_fn(logits_y, y)
             KLD_element = mu.pow(2).add_(logvar.exp()).mul_(-1).add_(1).add_(logvar).cuda()
             KLD = torch.sum(KLD_element).mul_(-0.5).cuda()
@@ -1336,7 +1341,7 @@ class LocalUpdate(object):
         return model, optimizer
 
     @staticmethod
-    def unlearning_nips(net, optimizer_nips, dataloader_erase, remaining_loader, loss_fn, reconstruction_function, net_temp, args, epoch, idx, train_type):
+    def unlearning_nips(net, optimizer_nips, dataloader_erase, remaining_loader, loss_fn, reconstruction_function, net_temp, args, epoch, idx, train_type,batch_acc, batch_b_acc):
         logs = defaultdict(list)
         mu_list = []
         sigma_list = []
@@ -1351,10 +1356,12 @@ class LocalUpdate(object):
             index = index + 1
             #print("index",index)
             x, y = x.to(args.device), y.to(args.device)  # (B, C, H, W), (B, 10)
-            x = x.view(x.size(0), -1)
+            if args.dataset =='MNIST':
+                x = x.view(x.size(0), -1)
 
             x2, y2 = x2.to(args.device), y2.to(args.device)  # (B, C, H, W), (B, 10)
-            x2 = x2.view(x2.size(0), -1)
+            if args.dataset =='MNIST':
+                x2 = x2.view(x2.size(0), -1)
 
             logits_z_e, logits_y_e, x_hat_e, mu_e, logvar_e = net(x, mode='forgetting')
             logits_z_e2, logits_y_e2, x_hat_e2, mu_e2, logvar_e2 = net(x2, mode='forgetting')
@@ -1395,17 +1402,33 @@ class LocalUpdate(object):
             e_log_p = torch.exp(BCE / (args.local_bs * 28 * 28))  # = 1/p
             e_log_py = torch.exp(-H_p_q)
             log_z = torch.mean(logits_z_e.log_softmax(dim=1))
+            log_y = torch.mean(logits_y_e.log_softmax(dim=1))
             kl_loss = nn.KLDivLoss(reduction="batchmean", log_target=True)
             kl_f_e = kl_loss(F.log_softmax( logits_y_e, dim=1), F.log_softmax( logits_y_f, dim=1))
             kl_z_f_e= kl_loss(F.log_softmax( logits_z_e, dim=1), F.log_softmax( logits_z_f, dim=1))
             unlearn_learning_rate = args.unlearn_learning_rate
             self_sharing_rate = args.self_sharing_rate
+
+            unlearning_item = args.kld_r * (KLD_mean.item() - args.unlearn_bce_r * BCE.item())  + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e.item() - H_p_q.item()) - args.reverse_rate * (log_z.item() + log_y.item())
+
+            #print(unlearning_item)
+            learning_item = args.self_sharing_rate * (args.beta * KLD_mean2.item()+ H_p_q2.item())
+            #print(learning_item)self_sharing_rate * (args.beta * KLD_mean2 + H_p_q2)
+
+            total = unlearning_item + learning_item # expected to equal to 0
+            if unlearning_item <= 0:# have approixmate to the retrained distribution and no need to unlearn
+                unl_rate = 0
+            else:
+                unl_rate = unlearning_item / total
+
+            self_s_rate = 1 - unl_rate
+
             if train_type == 'unlearn_nips':
                 loss = KLD_mean - unlearn_learning_rate * H_p_q #- BCE + kl_f_e  #1/H_p_q   #- log_z * e_log_py #e_log_py #args.beta * KLD_mean - H_p_q #- BCE / (args.local_bs * 28 * 28) #- H_p_q #- log_z / e_log_py #+ H_p_q2 - H_p_q #
             elif train_type == 'unlearn_vib':
                 loss =  args.kld_r * (KLD_mean - args.unlearn_bce_r * BCE) + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e - H_p_q) # args.beta * KLD_mean - H_p_q + args.beta * KLD_mean2  + H_p_q2 #- log_z / e_log_py #-   # H_p_q + args.beta * KLD_mean2
             elif train_type == 'self-sharing':
-                loss = args.kld_r * (KLD_mean - args.unlearn_bce_r * BCE)  + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e - H_p_q) + self_sharing_rate * (args.beta * KLD_mean2 + H_p_q2) # args.beta * KLD_mean - H_p_q + args.beta * KLD_mean2  + H_p_q2 #- log_z / e_log_py #-   # H_p_q + args.beta * KLD_mean2
+                loss = (args.kld_r * (KLD_mean - args.unlearn_bce_r * BCE)  + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e - H_p_q) - args.reverse_rate * (log_z + log_y) ) * unl_rate + self_s_rate * self_sharing_rate * (args.beta * KLD_mean2 + H_p_q2) # args.beta * KLD_mean - H_p_q + args.beta * KLD_mean2  + H_p_q2 #- log_z / e_log_py #-   # H_p_q + args.beta * KLD_mean2
 
 
 
@@ -1420,7 +1443,8 @@ class LocalUpdate(object):
                 'idx':idx,
                 'acc': acc,
                 'loss': loss.item(),
-                'BCE': BCE.item(),
+                'unl_rate': unl_rate,
+                'self_s_rate':self_s_rate,
                 'H_p_q':H_p_q.item(),
                 'kl_f_e':kl_f_e.item(),
                 'H(p,q)2': H_p_q2.item(),
@@ -1441,15 +1465,18 @@ class LocalUpdate(object):
             step=step+1
             unlearned_acc_list.append(acc)
             acc_list.append(acc2)
-            if index % len(dataloader_erase) == 0 and epoch==2:
+            batch_acc.append(acc2)
+            batch_b_acc.append(acc)
+
+            if index % len(dataloader_erase) == 3 and epoch==2:
                 print(f'[{epoch}/{init_epoch + args.num_epochs}:{step % len(dataloader_erase):3d}] '
                       + ', '.join([f'{k} {v:.3f}' for k, v in metrics.items()]))
 
-            if acc < 0.02:
-                break
+            # if acc < 0.02:
+            #     break
 
-        net.eval()
-        return net, optimizer_nips, acc_list, unlearned_acc_list
+        # net.eval()
+        return net, optimizer_nips, acc_list, unlearned_acc_list , batch_acc, batch_b_acc
 
     @staticmethod
     def retraining_kld(net, optimizer_retrain, dataloader_remain, loss_fn, reconstruction_function, net_org, net_unl, args, epoch, idx, KL_fr, KL_nipsr):
@@ -2377,7 +2404,7 @@ def FL_unlearn_train(net_glob, net_temp, args, dataset_train, dataset_test, dict
         backdoor_acc_list.append(backdoor_acc)
         print("backdoor_acc", backdoor_acc_list)
         print("global_unl_acc: ", acc_test)
-        if backdoor_acc < 0.08:
+        if backdoor_acc < 0.05:
             break
 
     print("epoch: ", iter)
@@ -2500,24 +2527,38 @@ args.local_ep = 10
 args.num_epochs = 1
 args.dataset = 'MNIST'
 args.xpl_channels = 1
-args.epochs = int(10)
+args.epochs = int(20)
 args.add_noise = False
 args.beta = 0.001
 args.lr = 0.001
 args.erased_size = 1500 #120
 args.poison_portion = 0.0
 args.erased_portion = 0.3
-args.erased_local_r = 0.04
+args.erased_local_r = 0.1
 ## in unlearning, we should make the unlearned model first be backdoored and then forget the trigger effect
 
 
-args.unlearn_learning_rate = 5
-args.self_sharing_rate = 5
-args.unlearn_ykl_r=0.0001
-args.unlearn_bce_r=0.0001
-args.kld_r = 0.0001
-args.reverse_rate = 0.0001
-args.unl_conver_r = 1
+# args.unlearn_learning_rate = 1
+# args.self_sharing_rate = 1
+# args.unlearn_ykl_r = 0.8
+# args.unlearn_bce_r = 0.001
+# args.kld_r = 0.0001
+# args.reverse_rate = 1
+# args.unl_conver_r = 1
+
+
+
+args.unlearn_learning_rate = 0.1
+args.reverse_rate = 0.1
+args.kld_r = 1
+args.unlearn_ykl_r = args.unlearn_learning_rate*0.4
+args.unlearn_bce_r = args.unlearn_learning_rate
+args.self_sharing_rate = args.unlearn_learning_rate*10
+args.unl_conver_r = 2
+args.hessian_rate = 0.00002
+
+
+
 print('args.beta',args.beta, 'args.lr', args.lr)
 print('args.erased_portion', args.erased_portion, 'args.erased_local_r',args.erased_local_r)
 print('args.unlearn_learning_rate',args.unlearn_learning_rate, 'args.self_sharing_rate',args.self_sharing_rate)
@@ -2638,6 +2679,18 @@ unlearn_vib.load_state_dict(net_glob.state_dict())
 
 unlearn_vib = FL_unlearn_train(unlearn_vib, net_glob, args, dataset_train, dataset_test, dict_users, idxs_local_dict,
                                erased_perm, poison_testset, train_type='unlearn_vib')
+
+
+
+
+# args.unlearn_learning_rate = 1
+# args.reverse_rate = 1
+# args.kld_r = 1
+# args.unlearn_ykl_r = args.unlearn_learning_rate*0.4
+# args.unlearn_bce_r = args.unlearn_learning_rate
+# args.self_sharing_rate = args.unlearn_learning_rate*10
+# args.unl_conver_r = 2
+# args.hessian_rate = 0.00002
 
 print()
 print("start unlearn parameter self-sharing")

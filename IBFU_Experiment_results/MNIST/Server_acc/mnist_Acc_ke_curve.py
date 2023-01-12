@@ -14,9 +14,9 @@ x=[1, 2, 3, 4, 5]
 
 labels = ['1', '2', '3', '4', '5']
 unl_fr = [97.6, 97.7, 97.7, 97.5, 97.6]
-unl_br = [97.58, 97.4, 96.76, 93.86, 91.93]
-unl_self_r = [97.6, 97.52, 97.32, 96.87, 95.54]
-unl_hess_r = [97.34,  96.67, 96.52, 95.42, 93.27]
+unl_br = [97.58, 97.4, 96.76, 94.76, 91.93]
+unl_self_r = [97.6, 97.65, 97.7, 97.57, 97.52]
+unl_hess_r = [97.34,  97.27, 96.62, 95.02, 93.27]
 
 
 
@@ -36,7 +36,7 @@ plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
 plt.ylabel('Accuracy (%)' ,fontsize=20)
-my_y_ticks = np.arange(88 ,101,2)
+my_y_ticks = np.arange(90 ,101,2)
 plt.yticks(my_y_ticks,fontsize=20)
 plt.xlabel('$K_u$' ,fontsize=20)
 

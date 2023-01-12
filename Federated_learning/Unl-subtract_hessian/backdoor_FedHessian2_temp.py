@@ -2471,14 +2471,14 @@ args.local_ep = 10
 args.num_epochs = 1
 args.dataset = 'MNIST'
 args.xpl_channels = 1
-args.epochs = int(10)
+args.epochs = int(20)
 args.add_noise = False
 args.beta = 0.001
 args.lr = 0.001
 args.erased_size = 1500 #120
 args.poison_portion = 0.0
 args.erased_portion = 0.3
-args.erased_local_r = 0.1
+args.erased_local_r = 0.02
 ## in unlearning, we should make the unlearned model first be backdoored and then forget the trigger effect
 args.unlearn_learning_rate = 1.5
 args.self_sharing_rate = 1.5
@@ -2586,6 +2586,8 @@ print("start train")
 net_glob = FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local_dict, poison_testset,
                     train_type='train')
 
+
+# args.hessian_rate=0.00001
 print()
 print("start unlearn")
 unlearn_nips, lr = init_vibi(args.dataset)
