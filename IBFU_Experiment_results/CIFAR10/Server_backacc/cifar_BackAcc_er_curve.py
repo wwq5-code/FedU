@@ -22,17 +22,22 @@ org = [80.4, 82.6, 85.2,87.4, 89.7]
 
 plt.figure()
 #plt.figure(figsize=(8, 5.3))
-plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
-plt.plot(x, unl_br, color='orange',  marker='x',  label='RFU',linewidth=4,  markersize=10)
-plt.plot(x, unl_self_r, color='g',  marker='*',  label='RFU-SS',linewidth=4, markersize=10)
-plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
+l_w=5.5
+m_s=15
+
+plt.plot(x, org, color='cyan',  marker='s',  label='Origin',linewidth=l_w, markersize=m_s)
+plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=l_w, markersize=m_s)
+plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=l_w, markersize=m_s)
+plt.plot(x, unl_br, color='orange',  marker='x',  label='CRFU',linewidth=l_w,  markersize=m_s)
+plt.plot(x, unl_self_r, color='g',  marker='*',  label='CRFU-SS',linewidth=l_w, markersize=m_s)
+
 # plt.plot(x, y_sa03, color='r',  marker='2',  label='AAAI21 A_acc, pr=0.3',linewidth=3, markersize=8)
 # plt.plot(x, y_sa05, color='darkblue',  marker='4',  label='AAAI21 A_acc, pr=0.5',linewidth=3, markersize=8)
 # plt.plot(x, y_ma03, color='darkviolet',  marker='3',  label='FedMC A_acc, pr=0.3',linewidth=3, markersize=8)
-plt.plot(x, org, color='cyan',  marker='s',  label='Origin',linewidth=4, markersize=10)
 
 
-plt.grid()
+
+# plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
 plt.ylabel('Backdoor Accuracy (%)' ,fontsize=20)

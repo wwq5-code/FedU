@@ -37,11 +37,11 @@ for i in range(5):
 
 
 fig, ax = plt.subplots(1, 2,sharex='col', sharey='row', figsize=(8.8,4))
-
-ax[0].plot(x, y_bfu_acc, color='orange',  marker='x',  label='IBFU',linewidth=4,  markersize=10)
-ax[0].plot(x, y_ss_acc, color='g',  marker='*',  label='IBFU-SS',linewidth=4, markersize=10)
-#plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 ax[0].plot(x, y_hfu_acc, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
+
+ax[0].plot(x, y_bfu_acc, color='orange',  marker='x',  label='CRFU',linewidth=4,  markersize=10)
+ax[0].plot(x, y_ss_acc, color='g',  marker='*',  label='CRFU-SS',linewidth=4, markersize=10)
+#plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 # plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 # plt.plot(x, unl_br, color='orange',  marker='x',  label='BFU',linewidth=4,  markersize=10)
@@ -55,7 +55,7 @@ ax[0].plot(x, y_hfu_acc, color='r',  marker='p',  label='HFU',linewidth=4, marke
 # plt.plot(x, y_hessian_30_s, color='y',  marker='*',  label='Unlearning INFOCOM22',linewidth=3, markersize=8)
 
 
-ax[0].grid()
+# ax[0].grid()
 leg = ax[0].legend(fancybox=True, shadow=True)
 ax[0].set_xlabel('Epoch' ,fontsize=20)
 ax[0].set_title('a) FedMC,$\it{RMC}=30\%$', fontsize=20)
@@ -68,11 +68,11 @@ ax[0].legend(loc='best',fontsize=20)
 # ax[0].tight_layout()
 
 
-
-ax[1].plot(x, y_bfu_back_acc, color='orange',  marker='x',  label='RFU',linewidth=4,  markersize=10)
-ax[1].plot(x, y_ss_back_acc, color='g',  marker='*',  label='RFU-SS',linewidth=4, markersize=10)
-#plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 ax[1].plot(x, y_hfu_back_acc, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
+
+ax[1].plot(x, y_bfu_back_acc, color='orange',  marker='x',  label='CRFU',linewidth=4,  markersize=10)
+ax[1].plot(x, y_ss_back_acc, color='g',  marker='*',  label='CRFU-SS',linewidth=4, markersize=10)
+#plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 # plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 # plt.plot(x, unl_br, color='orange',  marker='x',  label='BFU',linewidth=4,  markersize=10)
@@ -86,7 +86,7 @@ ax[1].plot(x, y_hfu_back_acc, color='r',  marker='p',  label='HFU',linewidth=4, 
 # plt.plot(x, y_hessian_30_s, color='y',  marker='*',  label='Unlearning INFOCOM22',linewidth=3, markersize=8)
 
 
-ax[1].grid()
+# ax[1].grid()
 leg = ax[1].legend(fancybox=True, shadow=True)
 ax[1].set_xlabel('Epoch' ,fontsize=20)
 ax[1].set_ylabel('Backdoor Accuracy (%)' ,fontsize=20)

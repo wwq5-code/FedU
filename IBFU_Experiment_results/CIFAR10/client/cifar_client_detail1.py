@@ -37,10 +37,12 @@ for i in range(5):
 
 
 plt.figure()
-plt.plot(x, y_bfu_back_acc, color='orange',  marker='x',  label='RFU',linewidth=4,  markersize=10)
-plt.plot(x, y_ss_back_acc, color='g',  marker='*',  label='RFU-SS',linewidth=4, markersize=10)
+l_w=5.5
+m_s=15
+plt.plot(x, y_hfu_back_acc, color='r',  marker='p',  label='HFU',linewidth=l_w, markersize=m_s)
+plt.plot(x, y_bfu_back_acc, color='orange',  marker='x',  label='CRFU',linewidth=l_w,  markersize=m_s)
+plt.plot(x, y_ss_back_acc, color='g',  marker='*',  label='CRFU-SS',linewidth=l_w, markersize=m_s)
 #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
-plt.plot(x, y_hfu_back_acc, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
 
 # plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 # plt.plot(x, unl_br, color='orange',  marker='x',  label='BFU',linewidth=4,  markersize=10)
@@ -54,7 +56,7 @@ plt.plot(x, y_hfu_back_acc, color='r',  marker='p',  label='HFU',linewidth=4, ma
 # plt.plot(x, y_hessian_30_s, color='y',  marker='*',  label='Unlearning INFOCOM22',linewidth=3, markersize=8)
 
 
-plt.grid()
+# plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 plt.xlabel('Epoch' ,fontsize=20)
 plt.ylabel('Backdoor Accuracy (%)' ,fontsize=20)

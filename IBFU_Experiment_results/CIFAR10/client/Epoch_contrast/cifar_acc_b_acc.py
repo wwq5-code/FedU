@@ -66,10 +66,11 @@ for i in range(40):
 
 fig, ax = plt.subplots(1, 1, figsize=(7, 5.2))
 # plt.figure()
-ax.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*2, marker='x',  label='BFU',linewidth=1)
-ax.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*2,  marker='*',  label='RFU-SS',linewidth=1)
-# #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 ax.scatter(y_hbu_b_acc_list, y_hbu_acc_list, color='r',  linestyle='-.',s=40*2,   marker='p', label='HBU',linewidth=1)
+ax.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*2, marker='x',  label='CRFU',linewidth=1)
+ax.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*2,  marker='*',  label='CRFU-SS',linewidth=1)
+# #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
+
 
 ax.plot([-10,130],[100, 100], color='sandybrown', label='Ob.-Rem.',linewidth=2,  markersize=10)
 ax.plot([100,100],[-10, 130], color='skyblue', label='Ob.-For.',linewidth=2,  markersize=10)
@@ -77,8 +78,8 @@ ax.plot([100,100],[-10, 130], color='skyblue', label='Ob.-For.',linewidth=2,  ma
 
 axins = ax.inset_axes((0.4, 0.2, 0.35, 0.35))
 
-axins.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*2, marker='x',  label='BFU',linewidth=1)
-axins.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*2,  marker='*',  label='RFU-SS',linewidth=1)
+axins.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*2, marker='x',  label='CRFU',linewidth=1)
+axins.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*2,  marker='*',  label='CRFU-SS',linewidth=1)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 axins.scatter(y_hbu_b_acc_list, y_hbu_acc_list, color='r',  linestyle='-.',s=40*2,   marker='p', label='HBU',linewidth=1)
 
