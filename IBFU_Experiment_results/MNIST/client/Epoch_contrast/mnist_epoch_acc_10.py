@@ -62,9 +62,9 @@ plt.plot(x, y_vibu_ss_acc_list, color='g', linestyle='-',  label='CRFU-SS',linew
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
-plt.plot(x, y_hbu_b_acc_list, color='grey',  linestyle='-.',  label='HBU:bac.',linewidth=l_w, markersize=10)
-plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='CRFU:bac.',linewidth=l_w,  markersize=10)
-plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='CRFU-SS:bac.',linewidth=l_w, markersize=10)
+plt.plot(x, y_hbu_b_acc_list, color='grey',  linestyle='-.',  label='HBU (bac.)',linewidth=l_w, markersize=10)
+plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='CRFU (bac.)',linewidth=l_w,  markersize=10)
+plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='CRFU-SS (bac.)',linewidth=l_w, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
