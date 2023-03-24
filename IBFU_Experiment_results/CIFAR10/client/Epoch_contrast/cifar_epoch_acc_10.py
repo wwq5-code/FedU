@@ -51,7 +51,7 @@ for i in range(50):
 
 
 plt.figure()
-l_w=4
+l_w=3.5
 m_s=15
 plt.plot(x, y_hbu_acc_list, color='r',  linestyle='-.',  label='HBU',linewidth=l_w, markersize=10)
 plt.plot(x, y_vbu_acc_list, color='orange', linestyle='--',   label='CRFU',linewidth=l_w,  markersize=10)

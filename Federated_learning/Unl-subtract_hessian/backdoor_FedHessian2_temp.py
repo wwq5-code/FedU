@@ -1606,7 +1606,7 @@ class LocalUpdate(object):
 
         # unlearning
         convergence = 0
-        for iter in range(args.local_ep): #self.args.local_ep
+        for iter in range(args.local_ep+40): #self.args.local_ep
             batch_loss = []
             # print(iter)
             temp_acc = []
@@ -1692,7 +1692,7 @@ class LocalUpdate(object):
             acc_list.append(np.mean(temp_acc))
             backdoor_list.append(np.mean(temp_back))
             epoch_loss.append(sum(batch_loss)/len(batch_loss))
-            if np.mean(temp_back) < 0.1:
+            if np.mean(temp_back) < 0.08:
                 convergence = convergence + 1
             if convergence >= args.unl_conver_r:
                 break
@@ -2167,7 +2167,7 @@ def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_te
 
     """3. federated unlearning"""
 
-    for iter in range(10):
+    for iter in range(args.epochs):
         idxs_users = range(args.num_users)
         w_locals = []
         grad_locals = []
@@ -2263,7 +2263,11 @@ def FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local
         w_locals = []
         grad_locals = []
 
-        for idx in idxs_users:
+        half_num_users =  int( args.num_users// 5)
+        idxs_users_for_train =random.sample(idxs_users, half_num_users)
+
+        for idx in  idxs_users: #  idxs_users_for_train:  # idxs_users:
+
 
             local = idxs_local_dict[idx]
             if train_type=='train':
@@ -2462,7 +2466,7 @@ def FL_unlearn_train(net_glob, net_temp, args, dataset_train, dataset_test, dict
 
 args = args_parser()
 args.gpu = 0
-args.num_users = 10
+args.num_users = 80
 args.device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() and args.gpu != -1 else 'cpu')
 args.iid = True
 args.model = 'z_linear'
@@ -2471,19 +2475,19 @@ args.local_ep = 10
 args.num_epochs = 1
 args.dataset = 'MNIST'
 args.xpl_channels = 1
-args.epochs = int(20)
+args.epochs = int(40)
 args.add_noise = False
 args.beta = 0.001
 args.lr = 0.001
 args.erased_size = 1500 #120
 args.poison_portion = 0.0
 args.erased_portion = 0.3
-args.erased_local_r = 0.02
+args.erased_local_r = 0.1
 ## in unlearning, we should make the unlearned model first be backdoored and then forget the trigger effect
 args.unlearn_learning_rate = 1.5
 args.self_sharing_rate = 1.5
 args.unl_conver_r=2
-args.hessian_rate=0.00001
+args.hessian_rate=0.001
 print('args.beta',args.beta, 'args.lr', args.lr)
 print('args.erased_portion', args.erased_portion, 'args.erased_local_r',args.erased_local_r)
 print('args.hessian_rate',args.hessian_rate, 'args.self_sharing_rate',args.self_sharing_rate)
@@ -2587,7 +2591,9 @@ net_glob = FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idx
                     train_type='train')
 
 
-# args.hessian_rate=0.00001
+#args.hessian_rate=0.00001
+# args.hessian_rate=0.0001
+# args.unl_conver_r=8
 print()
 print("start unlearn")
 unlearn_nips, lr = init_vibi(args.dataset)
@@ -2613,7 +2619,7 @@ unlearn_nips = unlearning_net_global(unlearn_nips, idxs_local_dict, args, datase
 #
 # print("start retrain")
 # retrian_net, KL_fr, KL_nipsr = FL_retrain(retrian_net, net_glob, unlearn_nips, args, dataset_train, dataset_test, dict_users, idxs_local_dict, poison_testset, retrain_epoch= args.epochs, train_type='retrain')
-#
+
 # # print("start retrain2")
 # # retrian_net2, lr = init_vibi(args.dataset)
 # # retrian_net2.to(args.device)

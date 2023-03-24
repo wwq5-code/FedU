@@ -1260,7 +1260,7 @@ class LocalUpdate(object):
             net, optimizer, acc_list, unlearned_acc_list = LocalUpdate.unlearning_nips(net, optimizer, self.erased_loader, remaining_loader, self.loss_func, reconstruction_function, net_temp, args ,epoch, idx, train_type)
             user_acc_list.append(np.mean(acc_list))
             user_unlearn_list.append(np.mean(unlearned_acc_list))
-            if np.mean(unlearned_acc_list) < 0.1:
+            if np.mean(unlearned_acc_list) < 0.08:
                 convergence = convergence + 1
             if convergence >= args.unl_conver_r and train_type=='unlearn_nips': # if accuracy on unlearned dataset performs lower than random, we think it converges
                 print("unlearn finish",epoch, np.mean(unlearned_acc_list))
@@ -1306,6 +1306,7 @@ class LocalUpdate(object):
 
             optimizer.zero_grad()
             loss.backward()
+            # clipping the grad
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5, norm_type=2.0, error_if_nonfinite=False)
             optimizer.step()
 
@@ -1395,22 +1396,48 @@ class LocalUpdate(object):
             e_log_p = torch.exp(BCE / (args.local_bs * 28 * 28))  # = 1/p
             e_log_py = torch.exp(-H_p_q)
             log_z = torch.mean(logits_z_e.log_softmax(dim=1))
+            log_y = torch.mean(logits_y_e.log_softmax(dim=1))
             kl_loss = nn.KLDivLoss(reduction="batchmean", log_target=True)
             kl_f_e = kl_loss(F.log_softmax( logits_y_e, dim=1), F.log_softmax( logits_y_f, dim=1))
             kl_z_f_e= kl_loss(F.log_softmax( logits_z_e, dim=1), F.log_softmax( logits_z_f, dim=1))
             unlearn_learning_rate = args.unlearn_learning_rate
             self_sharing_rate = args.self_sharing_rate
+
+            # if train_type == 'unlearn_nips':
+            #     loss = KLD_mean - unlearn_learning_rate * H_p_q #- BCE + kl_f_e  #1/H_p_q   #- log_z * e_log_py #e_log_py #args.beta * KLD_mean - H_p_q #- BCE / (args.local_bs * 28 * 28) #- H_p_q #- log_z / e_log_py #+ H_p_q2 - H_p_q #
+            # elif train_type == 'unlearn_vib':
+            #     loss =  args.kld_r * (KLD_mean - args.unlearn_bce_r * BCE) + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e - H_p_q) # args.beta * KLD_mean - H_p_q + args.beta * KLD_mean2  + H_p_q2 #- log_z / e_log_py #-   # H_p_q + args.beta * KLD_mean2
+            # elif train_type == 'self-sharing':
+            #     loss = args.kld_r * (KLD_mean - args.unlearn_bce_r * BCE)  + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e - H_p_q) + self_sharing_rate * (args.beta * KLD_mean2 + H_p_q2) # args.beta * KLD_mean - H_p_q + args.beta * KLD_mean2  + H_p_q2 #- log_z / e_log_py #-   # H_p_q + args.beta * KLD_mean2
+
+
+            unlearning_item = args.kld_r * (KLD_mean.item() - args.unlearn_bce_r * BCE.item())  + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e.item() - H_p_q.item()) - args.reverse_rate * (log_z.item() + log_y.item())
+
+            #print(unlearning_item)
+            learning_item = args.self_sharing_rate * (args.beta * KLD_mean2.item()+ H_p_q2.item())
+            #print(learning_item)self_sharing_rate * (args.beta * KLD_mean2 + H_p_q2)
+
+            total = unlearning_item + learning_item # expected to equal to 0
+            if unlearning_item <= 0:# have approixmate to the retrained distribution and no need to unlearn
+                unl_rate = 0
+            else:
+                unl_rate = unlearning_item / total
+
+            self_s_rate = 1 - unl_rate
+
             if train_type == 'unlearn_nips':
                 loss = KLD_mean - unlearn_learning_rate * H_p_q #- BCE + kl_f_e  #1/H_p_q   #- log_z * e_log_py #e_log_py #args.beta * KLD_mean - H_p_q #- BCE / (args.local_bs * 28 * 28) #- H_p_q #- log_z / e_log_py #+ H_p_q2 - H_p_q #
             elif train_type == 'unlearn_vib':
                 loss =  args.kld_r * (KLD_mean - args.unlearn_bce_r * BCE) + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e - H_p_q) # args.beta * KLD_mean - H_p_q + args.beta * KLD_mean2  + H_p_q2 #- log_z / e_log_py #-   # H_p_q + args.beta * KLD_mean2
             elif train_type == 'self-sharing':
-                loss = args.kld_r * (KLD_mean - args.unlearn_bce_r * BCE)  + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e - H_p_q) + self_sharing_rate * (args.beta * KLD_mean2 + H_p_q2) # args.beta * KLD_mean - H_p_q + args.beta * KLD_mean2  + H_p_q2 #- log_z / e_log_py #-   # H_p_q + args.beta * KLD_mean2
+                loss = (args.kld_r * (KLD_mean - args.unlearn_bce_r * BCE)  + unlearn_learning_rate *(args.unlearn_ykl_r * kl_f_e - H_p_q) - args.reverse_rate * (log_z + log_y) ) * unl_rate + self_s_rate * self_sharing_rate * (args.beta * KLD_mean2 + H_p_q2) # args.beta * KLD_mean - H_p_q + args.beta * KLD_mean2  + H_p_q2 #- log_z / e_log_py #-   # H_p_q + args.beta * KLD_mean2
+
 
 
 
             optimizer_nips.zero_grad()
             loss.backward()
+            #clipping grad
             torch.nn.utils.clip_grad_norm_(net.parameters(), 5, norm_type=2.0, error_if_nonfinite=False)
             optimizer_nips.step()
             acc = (logits_y_e.argmax(dim=1) == y).float().mean().item()
@@ -2210,7 +2237,10 @@ def FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local
         w_locals = []
         grad_locals = []
 
-        for idx in idxs_users:
+        half_num_users =  int( args.num_users// 5)
+        idxs_users_for_train =random.sample(idxs_users, half_num_users)
+
+        for idx in  idxs_users_for_train:  #idxs_users: #  idxs_users:
 
             local = idxs_local_dict[idx]
             if train_type=='train':
@@ -2323,7 +2353,7 @@ def FL_unlearn_train(net_glob, net_temp, args, dataset_train, dataset_test, dict
 
 
     """federated unlearning training"""
-    for iter in range(10):
+    for iter in range(args.epochs):
         # dict_usersZ = []
         idxs_users = range(args.num_users)
         w_locals = []
@@ -2402,16 +2432,17 @@ def FL_unlearn_train(net_glob, net_temp, args, dataset_train, dataset_test, dict
     # parse args
 args = args_parser()
 args.gpu = 0
-args.num_users = 10
+args.num_users = 80
+args.data_divide_parts = args.num_users
 args.device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() and args.gpu != -1 else 'cpu')
 args.iid = True
 args.model = 'z_linear'
 args.local_bs = 100
-args.local_ep = 10
+args.local_ep = 10 #(keeps similar training extent as original, args.num_users=40, it is 40 , args.num_users=10, it is 10)
 args.num_epochs = 1
 args.dataset = 'MNIST'
 args.xpl_channels = 1
-args.epochs = int(10)
+args.epochs = int(50)
 args.add_noise = False
 args.beta = 0.001
 args.lr = 0.001
@@ -2449,7 +2480,8 @@ if args.dataset == 'MNIST':
     dataset_train = datasets.MNIST('../../data/mnist/', train=True, download=True, transform=trans_mnist)
     dataset_test = datasets.MNIST('../../data/mnist/', train=False, download=True, transform=trans_mnist)
     if args.iid:
-        dict_users = mnist_iid(dataset_train, args.num_users)
+        #dict_users = mnist_iid(dataset_train, args.num_users)
+        dict_users = mnist_iid(dataset_train, args.data_divide_parts)
     else:
         dict_users = mnist_noniid(dataset_train, args.num_users)
 elif args.dataset == 'CIFAR10':
@@ -2471,15 +2503,18 @@ length = len(dataset_train)
 bend_size, remain_size = 2000, length - 2000
 bend_set, remain_set = torch.utils.data.random_split(dataset_train, [bend_size, remain_size])
 # dataloader_bend = DataLoader(bend_set, batch_size=args.local_bs, shuffle=True)
-poison_samples = int(length / args.num_users) * args.erased_local_r
+poison_samples = int(length / args.data_divide_parts) * args.erased_local_r
 poison_data, poison_targets = create_backdoor_train_dataset(dataname=args.dataset, train_data=dataset_train,
                                                             base_label=1,
                                                             trigger_label=2, poison_samples=poison_samples,
                                                             batch_size=args.local_bs, device=args.device)
 
+
+print(len(poison_data))
 poison_testset = create_backdoor_test_dataset(dataname=args.dataset, test_data=dataset_test, base_label=1,
                                               trigger_label=2, poison_samples=10000, batch_size=args.local_bs,
                                               device=args.device)
+
 
 poison_data, poison_targets = poison_data.to(args.device), poison_targets.to(args.device)
 # build model
