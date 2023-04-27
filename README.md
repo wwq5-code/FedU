@@ -2,6 +2,10 @@
 
 # Client-side Representation-forgetting Federated Unlearning (CRFU) and CRFU-SS
 
+### Overview
+This repository is the official implementation of CRFU, and the corresponding paper is under review.
+
+
 ### Prerequisites
 
 ```
@@ -32,3 +36,5 @@ python /Federated_learning/Unl-subtract_hessian/backdoor_FedHessian.py
 ```
 python /Federated_learning/Unl-subtract_hessian/Hessian_backddor_CIFAR/cifar_hessian_u/hessian_cifar_temp.py
 ```
+### Results
+Our model achieves the following performance on:
