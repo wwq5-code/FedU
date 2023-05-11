@@ -1,9 +1,9 @@
-# CRFU
+# CTRF
 
-# Client-side Representation-forgetting Federated Unlearning (CRFU) and CRFU-SS
+# Client-side Two-stage Representation Forgetting Federated Unlearning (CTRF)
 
 ### Overview
-This repository is the official implementation of CRFU, and the corresponding paper is under review.
+This repository is the official implementation of CTRF, and the corresponding paper is under review.
 
 
 ### Prerequisites
@@ -17,12 +17,12 @@ numpy
 
 ### Running the experiments
 
-1. To run the CRFU and CRFU-SS on MNIST
+1. To run the CRF and CTRF on MNIST
 ```
 python /Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
 ```
 
-2. To run the CRFU and CRFU-SS on CIFAR10
+2. To run the CRF and CTRF on CIFAR10
 ```
 python /Federated_learning/BackdoorFedUnl/backdoorUnl_cifar_er/CIFAR10_er02_3ke.py
 ```
@@ -37,4 +37,4 @@ python /Federated_learning/Unl-subtract_hessian/backdoor_FedHessian.py
 python /Federated_learning/Unl-subtract_hessian/Hessian_backddor_CIFAR/cifar_hessian_u/hessian_cifar_temp.py
 ```
 ### Results
-Our model achieves the following performance on:
+Our model achieves a better performance than state-of-the-art federated unlearning methods

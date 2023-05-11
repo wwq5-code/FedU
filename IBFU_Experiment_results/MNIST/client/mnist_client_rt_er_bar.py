@@ -19,8 +19,8 @@ plt.subplots()
 plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Retrain', color='royalblue', hatch='/')
 plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', color='red', hatch='-')
 
-plt.bar(x - width / 8, unl_br, width=0.148, label='CRFU', color='gold', hatch='**')
-plt.bar(x + width / 8, unl_self_r, width=0.148, label='CRFU-SS', color='green', hatch='++')
+plt.bar(x - width / 8, unl_br, width=0.148, label='CRF', color='gold', hatch='**')
+plt.bar(x + width / 8, unl_self_r, width=0.148, label='CTRF', color='green', hatch='++')
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
 plt.ylabel('Running Time (s)', fontsize=20)

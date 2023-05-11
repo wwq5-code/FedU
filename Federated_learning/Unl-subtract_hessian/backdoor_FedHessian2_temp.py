@@ -2152,7 +2152,7 @@ def get_weights(model):
     return np.concatenate([p.data.cpu().numpy().ravel() for p in model.parameters()])
 
 
-def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_test, erased_perm,poison_testset):
+def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_test, erased_perm,poison_testset,erased_loader):
     unlearning_temp_net.train()
     # org_resnet.train()
 
@@ -2188,8 +2188,15 @@ def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_te
                 local = idxs_local_dict[idx]
                 net_local_w, loss_item = local.unl_train(copy.deepcopy(unlearning_temp_net).to(args.device), idx, args)
 
+                print('hessian unlearned model')
+                net_1, lr = init_vibi(args.dataset)
+                net_1.load_state_dict(net_local_w)
+                print_multal_info_for_hessian(copy.deepcopy(net_1).to(args.device), erased_loader, erased_loader, args)
+
+
                 glob_w = unlearning_temp_net.state_dict()
                 new_lcoal_grad = unlearning_temp_net.state_dict()
+
                 for k in glob_w.keys():
                     new_lcoal_grad[k] = glob_w[k] - net_local_w[k]
 
@@ -2237,7 +2244,7 @@ def unlearning_net_global(unlearning_temp_net, idxs_local_dict, args, dataset_te
     unlearning_temp_net.eval()
     return unlearning_temp_net
 
-def FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local_dict, poison_testset, train_type="train"):
+def FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local_dict, poison_testset,erased_loader,erased_perm, train_type="train"):
     net_glob.train()
 
     # copy weights
@@ -2272,6 +2279,11 @@ def FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local
             local = idxs_local_dict[idx]
             if train_type=='train':
                 net_local_w = local.train_Bayes(copy.deepcopy(net_glob).to(args.device), idx, args)
+                if idx in erased_perm:
+                    print('original model')
+                    net_1, lr = init_vibi(args.dataset)
+                    net_1.load_state_dict(net_local_w)
+                    print_multal_info_for_hessian(copy.deepcopy(net_1).to(args.device), erased_loader, erased_loader,args)
 
             glob_w = net_glob.state_dict()
             new_lcoal_grad = net_glob.state_dict()
@@ -2294,6 +2306,10 @@ def FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local
         print("backdoor_acc", backdoor_acc)
         acc_test.append(valid_acc)
         backdoor_acc_list.append(backdoor_acc)
+
+
+        # print('hesian model unlearned')
+        # print_multal_info_for_hessian(copy.deepcopy(unlearn_nips).to(args.device), erased_loader, erased_loader, args)
 
         #acc_temp, poison_acc_temp = acc_evaluation_org(net_glob, dataset_test, args)
         # acc_test.append(acc_temp)
@@ -2455,9 +2471,122 @@ def FL_unlearn_train(net_glob, net_temp, args, dataset_train, dataset_test, dict
 
 
 
+class Mine1(nn.Module):
+
+    def __init__(self, noise_size=49, sample_size=28*28, output_size=1, hidden_size=128):
+        super(Mine1, self).__init__()
+        self.fc1_noise = nn.Linear(noise_size, hidden_size, bias=False)
+        self.fc1_sample = nn.Linear(sample_size, hidden_size, bias=False)
+        self.fc1_bias = nn.Parameter(torch.zeros(hidden_size))
+        self.fc2 = nn.Linear(hidden_size, hidden_size)
+        self.fc3 = nn.Linear(hidden_size, output_size)
+
+        self.ma_et = None
+
+        for m in self.modules():
+            if isinstance(m, nn.Linear):
+                nn.init.kaiming_normal_(m.weight)
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0.0)
+
+    def forward(self, noise, sample):
+        x_noise = self.fc1_noise(noise)
+        x_sample = self.fc1_sample(sample)
+        x = F.leaky_relu(x_noise + x_sample + self.fc1_bias, negative_slope=2e-1)
+        x = F.leaky_relu(self.fc2(x), negative_slope=2e-1)
+        x = F.leaky_relu(self.fc3(x), negative_slope=2e-1)
+        return x
 
 
+def calculate_MI(X, Z, Z_size, M, M_opt, args, ma_rate=0.001):
+    '''
+    we use Mine to calculate the mutual information between two layers of networks.
+    :param G:
+    :param M:
+    :param ma_rate:
+    :return:
+    '''
 
+    z_bar = torch.randn((args.local_bs, Z_size)).to(args.device)
+
+    et = torch.mean(torch.exp(M(z_bar, X)))
+
+    if M.ma_et is None:
+        M.ma_et = et.detach().item()
+
+    M.ma_et += ma_rate * (et.detach().item() - M.ma_et)
+
+    #z = torch.narrow(z, dim=1, start=0, length=3)  # slice for MI
+    mutual_information = torch.mean(M(Z, X)) \
+                         - torch.log(et) * et.detach() / M.ma_et
+
+    loss = - mutual_information
+
+    M_opt.zero_grad()
+    loss.backward()
+    M_opt.step()
+
+    return mutual_information.item()
+
+def print_multal_info_for_hessian(vibi_f_frkl_ss, dataloader_erase, dataloader_sampled, args):
+    reconstructor = LinearModel(n_feature=49, n_output=28 * 28)
+    reconstructor = reconstructor.to(args.device)
+    optimizer_recon = torch.optim.Adam(reconstructor.parameters(), lr=args.lr)
+
+    optimizer_hessian = torch.optim.Adam(vibi_f_frkl_ss.parameters(), lr=args.lr)
+
+    reconstruction_function = nn.MSELoss(size_average=False)
+    loss_fn = nn.CrossEntropyLoss()
+    M = Mine1(noise_size=98)
+    M.to(args.device)
+    M_opt = torch.optim.Adam(M.parameters(), lr=2e-4)
+    step_start = 0
+    total_erased_rate = args.erased_local_r/10
+    mutual_training_round = int(0.1 / total_erased_rate) + 1
+    t_round = int(len(dataloader_erase) / total_erased_rate * 0.1)
+    print(t_round, len(dataloader_erase))
+    for i in range(mutual_training_round):
+        # for step, (x, y) in enumerate(dataloader_erase, start=step_start):
+        for (x, y), (x2, y2) in zip(dataloader_erase, dataloader_sampled):
+
+            t_round = t_round - 1
+            if t_round < 0: break
+            x, y = x.to(args.device), y.to(args.device)
+            x = x.view(x.size(0), -1)
+            x2, y2 = x2.to(args.device), y2.to(args.device)
+            x2 = x2.view(x2.size(0), -1)
+            logits_z, logits_y, x_hat, mu, logvar = vibi_f_frkl_ss(x, mode='forgetting')  # (B, C* h* w), (B, N, 10)
+            H_p_q = loss_fn(logits_y, y)
+            loss = H_p_q
+            optimizer_hessian.zero_grad()
+            loss.backward()
+            #             torch.nn.utils.clip_grad_norm_(vibi_f_frkl_ss.parameters(), args.max_norm, norm_type=2.0, error_if_nonfinite=False)
+
+            #             optimizer_hessian.step()
+            B, Z_size = logits_z.shape
+            x = x.view(x.size(0), -1)
+            for name, param in vibi_f_frkl_ss.explainer.named_parameters():
+                if name == 'fc2.bias':
+                    grad_z = param.grad
+                    # print(f"{name}: {param.grad.shape}")
+            grad_z = grad_z.view(-1)
+            expanded_tensor = grad_z.unsqueeze(0)
+            #             print(expanded_tensor)
+            # break
+            repeated_tensor = expanded_tensor.repeat(x.size(0), 1)
+            B, Z_size_of_grad = repeated_tensor.shape
+            mi = calculate_MI(x.detach(), repeated_tensor.detach(), Z_size_of_grad, M, M_opt, args, ma_rate=0.001)
+            if mi < 0:
+                mi = calculate_MI(x.detach(), repeated_tensor.detach(), Z_size_of_grad, M, M_opt, args, ma_rate=0.001)
+            if t_round % 100 == 0:
+                print(t_round, ' mutual info ', mi)
+
+    print()
+    print('mutual information after vibi_f_frkl_ss unlearning', mi)
+    KLD_element = mu.pow(2).add_(logvar.exp()).mul_(-1).add_(1).add_(logvar).cuda()
+    KLD = torch.sum(KLD_element).mul_(-0.5).cuda()
+    KLD_mean = torch.mean(KLD_element).mul_(-0.5).cuda()
+    print('kld_mean', KLD_mean.item())
 
 
 
@@ -2466,26 +2595,27 @@ def FL_unlearn_train(net_glob, net_temp, args, dataset_train, dataset_test, dict
 
 args = args_parser()
 args.gpu = 0
-args.num_users = 80
+args.num_users = 10
 args.device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() and args.gpu != -1 else 'cpu')
 args.iid = True
 args.model = 'z_linear'
-args.local_bs = 100
+args.local_bs = 20
 args.local_ep = 10
 args.num_epochs = 1
 args.dataset = 'MNIST'
 args.xpl_channels = 1
-args.epochs = int(40)
+args.epochs = int(20)
 args.add_noise = False
 args.beta = 0.001
 args.lr = 0.001
 args.erased_size = 1500 #120
 args.poison_portion = 0.0
 args.erased_portion = 0.3
-args.erased_local_r = 0.1
+args.erased_local_r = 0.2
 ## in unlearning, we should make the unlearned model first be backdoored and then forget the trigger effect
 args.unlearn_learning_rate = 1.5
 args.self_sharing_rate = 1.5
+#here set local unlearning too many round, it will cause unlearning catastrophic and the mutual information will be nan
 args.unl_conver_r=2
 args.hessian_rate=0.001
 print('args.beta',args.beta, 'args.lr', args.lr)
@@ -2585,10 +2715,16 @@ for idx in idxs_users:
                         poison_targets=poison_targets, erased_perm=erased_perm, idx=idx)
     idxs_local_dict[idx] = local
 
+
+erasure_set = Data.TensorDataset(poison_data, poison_targets)
+erased_loader = DataLoader(erasure_set, batch_size=args.local_bs, shuffle=True)
+
+
 print()
 print("start train")
-net_glob = FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local_dict, poison_testset,
+net_glob = FL_train(net_glob, args, dataset_train, dataset_test, dict_users, idxs_local_dict, poison_testset, erased_loader, erased_perm,
                     train_type='train')
+
 
 
 #args.hessian_rate=0.00001
@@ -2600,7 +2736,17 @@ unlearn_nips, lr = init_vibi(args.dataset)
 unlearn_nips.to(args.device)
 unlearn_nips.load_state_dict(net_glob.state_dict())
 
-unlearn_nips = unlearning_net_global(unlearn_nips, idxs_local_dict, args, dataset_test, erased_perm, poison_testset)
+unlearn_nips = unlearning_net_global(unlearn_nips, idxs_local_dict, args, dataset_test, erased_perm, poison_testset,erased_loader)
+
+
+
+print('original model')
+print_multal_info_for_hessian(copy.deepcopy(net_glob).to(args.device), erased_loader,erased_loader, args)
+
+
+print('hesian model unlearned')
+print_multal_info_for_hessian(copy.deepcopy(unlearn_nips).to(args.device), erased_loader,erased_loader, args)
+
 
 # print("start unlearn parameter self-sharing")
 # unlearn_self, lr = init_vibi(args.dataset)

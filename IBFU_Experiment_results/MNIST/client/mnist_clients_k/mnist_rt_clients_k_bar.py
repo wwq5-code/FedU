@@ -20,8 +20,8 @@ plt.figure()
 plt.bar(x - width / 2 - width / 8 + width / 8, unl_fr, width=0.168, label='Retrain', color='dodgerblue', hatch='/')
 plt.bar(x + width / 2 - width / 8 + width / 16, unl_hess_r, width=0.168, label='HFU', color='tomato', hatch='-')
 
-plt.bar(x - width / 8 - width / 16 , unl_br, width=0.168, label='CRFU', color='orange', hatch='\\')
-plt.bar(x + width / 8, unl_self_r, width=0.168, label='CRFU-SS', color='g', hatch='x')
+plt.bar(x - width / 8 - width / 16 , unl_br, width=0.168, label='CRF', color='orange', hatch='\\')
+plt.bar(x + width / 8, unl_self_r, width=0.168, label='CTRF', color='g', hatch='x')
 
 
 
@@ -36,7 +36,7 @@ plt.yticks(my_y_ticks, fontsize=20)
 # ax.set_yticklabels(my_y_ticks,fontsize=15)
 
 plt.legend(loc='upper left', fontsize=15)
-plt.xlabel('K' ,fontsize=20)
+plt.xlabel('${\it K}$' ,fontsize=20)
 # ax.bar_label(rects1, padding=1)
 # ax.bar_label(rects2, padding=3)
 # ax.bar_label(rects3, padding=3)

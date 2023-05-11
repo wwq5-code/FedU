@@ -26,8 +26,8 @@ l_w=5.5
 m_s=15
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=l_w, markersize=m_s)
 plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=l_w, markersize=m_s)
-plt.plot(x, unl_br, color='orange',  marker='x',  label='CRFU',linewidth=l_w,  markersize=m_s)
-plt.plot(x, unl_self_r, color='g',  marker='*',  label='CRFU-SS',linewidth=l_w, markersize=m_s)
+plt.plot(x, unl_br, color='orange',  marker='x',  label='CRF',linewidth=l_w,  markersize=m_s)
+plt.plot(x, unl_self_r, color='g',  marker='*',  label='CTRF',linewidth=l_w, markersize=m_s)
 
 # plt.plot(x, y_sa03, color='r',  marker='2',  label='AAAI21 A_acc, pr=0.3',linewidth=3, markersize=8)
 # plt.plot(x, y_sa05, color='darkblue',  marker='4',  label='AAAI21 A_acc, pr=0.5',linewidth=3, markersize=8)
