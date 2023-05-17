@@ -43,7 +43,7 @@ y_vbu_b_acc_list = []
 y_vibu_ss_b_acc_list =[]
 y_hbu_b_acc_list = []
 
-for i in range(50):
+for i in range(100):
     # print(np.random.laplace(0, 1)/10+0.2)
     x.append(i*4)
     #y_fkl[i] = y_fkl[i*2]*100

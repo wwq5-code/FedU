@@ -37,7 +37,7 @@ plt.figure()
 plt.plot(x, org, color='cyan',  marker='s',  label='Origin',linewidth=4, markersize=10)
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
 plt.plot(x, unl_br, color='orange',  marker='x',  label='CRF',linewidth=4,  markersize=10)
-plt.plot(x, unl_self_r, color='g',  marker='*',  label='CTRF',linewidth=4, markersize=10)
+plt.plot(x, unl_self_r, color='g',  marker='*',  label='CTFU',linewidth=4, markersize=10)
 
 
 #plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)

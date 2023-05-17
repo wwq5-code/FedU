@@ -1,9 +1,9 @@
-# CTRF
+# UTFU
 
-# Client-side Two-stage Representation Forgetting Federated Unlearning (CTRF)
+# User-side Two-component Federated Unlearning (UTFU)
 
 ### Overview
-This repository is the official implementation of CTRF, and the corresponding paper is under review.
+This repository is the official implementation of UTFU, and the corresponding paper is under review.
 
 
 ### Prerequisites
@@ -17,12 +17,12 @@ numpy
 
 ### Running the experiments
 
-1. To run the CRF and CTRF on MNIST
+1. To run the URF and UTFU on MNIST
 ```
 python /Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
 ```
 
-2. To run the CRF and CTRF on CIFAR10
+2. To run the URF and UTFU on CIFAR10
 ```
 python /Federated_learning/BackdoorFedUnl/backdoorUnl_cifar_er/CIFAR10_er02_3ke.py
 ```
