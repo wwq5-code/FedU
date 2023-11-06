@@ -9,10 +9,11 @@ This repository is the official implementation of UTFU, and the corresponding pa
 ### Prerequisites
 
 ```
-python = 3.8
-pytorch = 1.4.0
-matplotlib
-numpy
+python = 3.10.10
+torch==2.0.0
+torchvision==0.15.1
+matplotlib==3.7.1
+numpy==1.23.5
 ```
 
 ### Running the experiments

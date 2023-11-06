@@ -53,9 +53,9 @@ for i in range(50):
 
 
 plt.figure()
-plt.plot(x, y_hbu_b_acc_list, color='r',  linestyle='-.',  label='HBU',linewidth=4, markersize=10)
-plt.plot(x, y_vbu_b_acc_list, color='orange', linestyle='--',   label='CRFU',linewidth=4,  markersize=10)
-plt.plot(x, y_vibu_ss_b_acc_list, color='g', linestyle='-',  label='CRFU-SS',linewidth=4, markersize=10)
+plt.plot(x, y_hbu_b_acc_list, color='r',  linestyle='-.',  label='HFU',linewidth=4, markersize=10)
+plt.plot(x, y_vbu_b_acc_list, color='orange', linestyle='--',   label='URF',linewidth=4,  markersize=10)
+plt.plot(x, y_vibu_ss_b_acc_list, color='g', linestyle='-',  label='UTFU',linewidth=4, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 # plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='BFU:bac.',linewidth=4,  markersize=10)

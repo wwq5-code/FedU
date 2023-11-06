@@ -1175,11 +1175,11 @@ class LocalUpdate(object):
 
         for epoch in range(self.args.local_ep):
             step_start = epoch * len(self.ldr_train)
-            # start = time.clock()
+            # start = time.time()
             net, optimizer = LocalUpdate.learning_train(self.ldr_train, net, step_start, self.loss_func, reconstruction_function,
                                              optimizer, args, epoch,idx)
-            # end = time.clock()
-            #print("running time of one epoch", end - start)
+            # end = time.time()
+            # print("running time of one epoch", end - start)
             # net.eval()
         return net.state_dict()
 

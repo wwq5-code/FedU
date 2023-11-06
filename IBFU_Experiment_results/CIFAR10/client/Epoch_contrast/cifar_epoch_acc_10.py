@@ -53,15 +53,15 @@ for i in range(50):
 plt.figure()
 l_w=3.5
 m_s=15
-plt.plot(x, y_hbu_acc_list, color='r',  linestyle='-.',  label='HBU',linewidth=l_w, markersize=10)
-plt.plot(x, y_vbu_acc_list, color='orange', linestyle='--',   label='CRF',linewidth=l_w,  markersize=10)
-plt.plot(x, y_vibu_ss_acc_list, color='g', linestyle='-',  label='CTFU',linewidth=l_w, markersize=10)
+plt.plot(x, y_hbu_acc_list, color='r',  linestyle='-.',  label='HFU',linewidth=l_w, markersize=10)
+plt.plot(x, y_vbu_acc_list, color='orange', linestyle='--',   label='URF',linewidth=l_w,  markersize=10)
+plt.plot(x, y_vibu_ss_acc_list, color='g', linestyle='-',  label='UTFU',linewidth=l_w, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
-plt.plot(x, y_hbu_b_acc_list, color='grey',  linestyle='-.',  label='HBU (bac.)',linewidth=l_w, markersize=10)
-plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='CRF (bac.)',linewidth=l_w,  markersize=10)
-plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='CTFU (bac.)',linewidth=l_w, markersize=10)
+plt.plot(x, y_hbu_b_acc_list, color='grey',  linestyle='-.',  label='HFU (bac.)',linewidth=l_w, markersize=10)
+plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='URF (bac.)',linewidth=l_w,  markersize=10)
+plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='UTFU (bac.)',linewidth=l_w, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
