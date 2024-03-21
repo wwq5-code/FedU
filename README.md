@@ -1,9 +1,10 @@
-# UTFU
+# UIAF-U
 
-# User-side Two-component Federated Unlearning (UTFU)
+# User-side Influence Approximation Forgetting with Utility Preservation (UIAF-U) for Federated Unlearning
+
 
 ### Overview
-This repository is the official implementation of UTFU, and the corresponding paper is under review.
+This repository is the official implementation of UIAF-U, and the corresponding paper is under review.
 
 
 ### Prerequisites
@@ -18,12 +19,12 @@ numpy==1.23.5
 
 ### Running the experiments
 
-1. To run the URF and UTFU on MNIST
+1. To run the URF and UIAF-U on MNIST
 ```
 python /Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
 ```
 
-2. To run the URF and UTFU on CIFAR10
+2. To run the URF and UIAF-U on CIFAR10
 ```
 python /Federated_learning/BackdoorFedUnl/backdoorUnl_cifar_er/CIFAR10_er02_3ke.py
 ```

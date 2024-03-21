@@ -69,8 +69,8 @@ fig, ax = plt.subplots(1, 1, figsize=(7, 5.2))
 marker_size = 8
 target_width = 6
 ax.scatter(y_hbu_b_acc_list, y_hbu_acc_list, color='r',  linestyle='-.',s=40*marker_size,   marker='p', label='HFU',linewidth=0)
-ax.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*marker_size, marker='^',  label='URF',linewidth=0)
-ax.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*marker_size,  marker='o',  label='UTFU',linewidth=0)
+ax.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*marker_size, marker='^',  label='UIAF',linewidth=0)
+ax.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*marker_size,  marker='o',  label='UIAF-U',linewidth=0)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
@@ -81,8 +81,8 @@ ax.plot([100,100],[-10, 130], color='skyblue', label='Rep.-For.',linewidth=targe
 
 axins = ax.inset_axes((0.45, 0.2, 0.38, 0.38))
 
-axins.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*marker_size, marker='^',  label='URF',linewidth=0)
-axins.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*marker_size,  marker='o',  label='UTFU',linewidth=0)
+axins.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*marker_size, marker='^',  label='UIAF',linewidth=0)
+axins.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*marker_size,  marker='o',  label='UIAF-U',linewidth=0)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 axins.scatter(y_hbu_b_acc_list, y_hbu_acc_list, color='r',  linestyle='-.',s=40*marker_size,   marker='p', label='HFU',linewidth=0)
 
@@ -172,3 +172,4 @@ plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
 plt.savefig('cifar_epoch_acc_b_acc_other_form.png', dpi=200)
 plt.show()
+# format='pdf',

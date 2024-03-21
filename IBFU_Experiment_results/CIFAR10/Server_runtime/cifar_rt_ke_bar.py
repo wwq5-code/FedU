@@ -20,8 +20,8 @@ plt.figure()
 plt.bar(x - width / 2 - width / 8 + width / 8, unl_fr, width=0.168, label='Retrain', color='dodgerblue', hatch='/')
 plt.bar(x + width / 2 - width / 8 + width / 16, unl_hess_r, width=0.168, label='HFU', color='tomato', hatch='-')
 
-plt.bar(x - width / 8 - width / 16 , unl_br, width=0.168, label='URF', color='orange', hatch='\\')
-plt.bar(x + width / 8, unl_self_r, width=0.168, label='UTFU', color='g', hatch='x')
+plt.bar(x - width / 8 - width / 16 , unl_br, width=0.168, label='UIAF', color='orange', hatch='\\')
+plt.bar(x + width / 8, unl_self_r, width=0.168, label='UIAF-U', color='g', hatch='x')
 
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
@@ -48,5 +48,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('cifar_rt_ke_bar.png', dpi=200)
+plt.savefig('cifar_rt_ke_bar.pdf', format='pdf', dpi=200)
 plt.show()

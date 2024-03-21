@@ -57,14 +57,14 @@ l_w=3.5
 
 plt.figure()
 plt.plot(x, y_hbu_acc_list, color='r',  linestyle='-.',  label='HFU',linewidth=l_w, markersize=10)
-plt.plot(x, y_vbu_acc_list, color='orange', linestyle='--',   label='URF',linewidth=l_w,  markersize=10)
-plt.plot(x, y_vibu_ss_acc_list, color='g', linestyle='-',  label='UTFU',linewidth=l_w, markersize=10)
+plt.plot(x, y_vbu_acc_list, color='orange', linestyle='--',   label='UIAF',linewidth=l_w,  markersize=10)
+plt.plot(x, y_vibu_ss_acc_list, color='g', linestyle='-',  label='UIAF-U',linewidth=l_w, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
 plt.plot(x, y_hbu_b_acc_list, color='grey',  linestyle='-.',  label='HFU (bac.)',linewidth=l_w, markersize=10)
-plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='URF (bac.)',linewidth=l_w,  markersize=10)
-plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='UTFU (bac.)',linewidth=l_w, markersize=10)
+plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='UIAF (bac.)',linewidth=l_w,  markersize=10)
+plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='UIAF-U (bac.)',linewidth=l_w, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
@@ -103,5 +103,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('mnist_epoch_detail_acc10.png', dpi=200)
+plt.savefig('mnist_epoch_detail_acc10.pdf', format='pdf', dpi=200)
 plt.show()

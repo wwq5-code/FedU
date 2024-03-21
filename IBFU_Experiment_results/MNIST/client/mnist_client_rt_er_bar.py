@@ -19,8 +19,8 @@ plt.subplots()
 plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Retrain', color='royalblue', hatch='/')
 plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', color='red', hatch='-')
 
-plt.bar(x - width / 8, unl_br, width=0.148, label='URF', color='gold', hatch='**')
-plt.bar(x + width / 8, unl_self_r, width=0.148, label='UTFU', color='green', hatch='++')
+plt.bar(x - width / 8, unl_br, width=0.148, label='UIAF', color='gold', hatch='**')
+plt.bar(x + width / 8, unl_self_r, width=0.148, label='UIAF-U', color='green', hatch='++')
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
 plt.ylabel('Running Time (s)', fontsize=20)
@@ -46,5 +46,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('mnist_client_rt_er_bar.png', dpi=200)
+plt.savefig('mnist_client_rt_er_bar.pdf', format='pdf', dpi=200)
 plt.show()

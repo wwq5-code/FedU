@@ -36,8 +36,8 @@ plt.figure()
 #plt.figure(figsize=(8, 5.3))
 plt.plot(x, org, color='cyan',  marker='s',  label='Origin',linewidth=4, markersize=10)
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=4, markersize=10)
-plt.plot(x, unl_br, color='orange',  marker='x',  label='URF',linewidth=4,  markersize=10)
-plt.plot(x, unl_self_r, color='g',  marker='*',  label='UTFU',linewidth=4, markersize=10)
+plt.plot(x, unl_br, color='orange',  marker='x',  label='UIAF',linewidth=4,  markersize=10)
+plt.plot(x, unl_self_r, color='g',  marker='*',  label='UIAF-U',linewidth=4, markersize=10)
 
 
 #plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=4, markersize=10)
@@ -66,5 +66,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('mnist_backacc_ur_curve.png', dpi=200)
+plt.savefig('mnist_backacc_ur_curve.pdf', format='pdf', dpi=200)
 plt.show()
