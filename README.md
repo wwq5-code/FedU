@@ -19,12 +19,12 @@ numpy==1.23.5
 
 ### Running the experiments
 
-1. To run the URF and FedU on MNIST
+1. To run the FedU and UIAF-U on MNIST
 ```
 python /Federated_learning/BackdoorFedUnl/BackdoorFedAvg.py
 ```
 
-2. To run the URF and FedU on CIFAR10
+2. To run the FedU and UIAF-U on CIFAR10
 ```
 python /Federated_learning/BackdoorFedUnl/backdoorUnl_cifar_er/CIFAR10_er02_3ke.py
 ```
