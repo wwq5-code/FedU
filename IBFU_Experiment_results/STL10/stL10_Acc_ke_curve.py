@@ -13,10 +13,10 @@ x=[1, 2, 3, 4, 5]
 # basic_for_plt=[99.8, 99.8, 99.8, 99.8, 99.8]
 
 labels = ['1', '2', '3', '4', '5']
-unl_fr = [97.6, 97.7, 97.7, 97.5, 97.6]
-unl_br = [97.58, 97.4, 96.76, 94.76, 91.93]
-unl_self_r = [97.6, 97.65, 97.7, 97.57, 97.52]
-unl_hess_r = [97.34,  97.27, 96.62, 95.02, 93.27]
+unl_fr = [52.83, 52.58, 52.68, 52.08, 51.175]
+unl_br = [51.78, 51.0, 50.98, 49.98, 49.198]
+unl_self_r = [51.76, 51.65, 51.23, 50.57, 50.225]
+unl_hess_r = [51.99,  50.93, 50.83, 49.83, 49.183]
 
 
 
@@ -41,7 +41,7 @@ plt.plot(x, unl_self_r, color='g',  marker='*',  label='UIAF-U',linewidth=l_w, m
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
 plt.ylabel('Accuracy (%)' ,fontsize=24)
-my_y_ticks = np.arange(90 ,101,2)
+my_y_ticks = np.arange(46 ,55,2)
 plt.yticks(my_y_ticks,fontsize=20)
 plt.xlabel('$K_u$' ,fontsize=20)
 
@@ -56,5 +56,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('mnist_acc_ke_curve.pdf', format='pdf', dpi=200)
+plt.savefig('stl_acc_ke_curve.pdf', format='pdf', dpi=200)
 plt.show()

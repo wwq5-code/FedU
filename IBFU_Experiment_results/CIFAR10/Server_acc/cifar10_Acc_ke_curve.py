@@ -38,7 +38,7 @@ plt.plot(x, unl_self_r, color='g',  marker='*',  label='UIAF-U',linewidth=l_w, m
 # plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
-plt.ylabel('Accuracy (%)' ,fontsize=20)
+plt.ylabel('Accuracy (%)' ,fontsize=24)
 my_y_ticks = np.arange(72 ,83,2)
 plt.yticks(my_y_ticks,fontsize=20)
 plt.xlabel('$K_u$' ,fontsize=20)

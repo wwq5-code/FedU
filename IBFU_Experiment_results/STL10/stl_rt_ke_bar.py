@@ -3,10 +3,10 @@ import numpy as np
 
 # user num = 50
 labels = ['1', '2', '3', '4', '5']
-unl_fr = [20*10*0.22, 20*10*0.22, 20*10*0.22, 20*10*0.22, 20*10*0.22]
-unl_br = [2*10*0.22, 3*10*0.22, 6*10*0.22, 5*10*0.22, 3*10*0.22]
-unl_self_r = [1*10*0.22, 1*10*0.22, 4*10*0.22, 3*10*0.22, 2*10*0.22]
-unl_hess_r = [1*10*0.22,  2*10*0.22, 4*10*0.22, 4*10*0.22, 3*10*0.22]
+unl_fr = [154, 154, 154, 154, 154]
+unl_br = [2*10*0.385, 2*10*0.385, 8.13, 3*10*0.385, 3*10*0.385]
+unl_self_r = [5.4, 5.5, 6.1, 6.2, 6.8]
+unl_hess_r = [5.4,  5.5, 6.1, 6.2, 6.8]
 
 x = np.arange(len(labels))  # the label locations
 width = 0.6  # the width of the bars
@@ -31,7 +31,7 @@ plt.ylabel('Running Time (s)', fontsize=24)
 plt.xticks(x, labels, fontsize=20)
 # ax.set_xticklabels(labels,fontsize=15)
 
-my_y_ticks = np.arange(0, 26*2, 8)
+my_y_ticks = np.arange(0, 162, 40)
 plt.yticks(my_y_ticks, fontsize=20)
 # ax.set_yticklabels(my_y_ticks,fontsize=15)
 
@@ -49,5 +49,5 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('mnist_rt_ke_bar.pdf', format='pdf', dpi=200)
+plt.savefig('stl_rt_ke_bar.pdf', format='pdf', dpi=200)
 plt.show()
