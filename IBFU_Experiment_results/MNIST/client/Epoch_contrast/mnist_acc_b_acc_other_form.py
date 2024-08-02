@@ -77,7 +77,7 @@ ax.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=
 
 
 ax.plot([-10,130],[100, 100], color='sandybrown', label='Uti.-Pre.',linewidth=target_width,  markersize=10)
-ax.plot([100,100],[-10, 130], color='skyblue', label='Rep.-For.',linewidth=target_width,  markersize=10)
+ax.plot([100,100],[-10, 130], color='skyblue', label='Inf.-For.',linewidth=target_width,  markersize=10)
 
 
 
@@ -89,7 +89,7 @@ axins.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-'
 axins.scatter(y_hbu_b_acc_list, y_hbu_acc_list, color='r',  linestyle='-.',s=40*marker_size,   marker='p', label='HFU',linewidth=0)
 
 axins.plot([-10,130],[100, 100], color='sandybrown', label='Uti.-Pre.',linewidth=target_width,  markersize=10)
-axins.plot([100,100],[-10, 130], color='skyblue', label='Rep.-For.',linewidth=target_width,  markersize=10)
+axins.plot([100,100],[-10, 130], color='skyblue', label='Inf.-For.',linewidth=target_width,  markersize=10)
 
 # fix the number of ticks on the inset axes
 axins.yaxis.get_major_locator().set_params(nbins=3)
@@ -175,7 +175,7 @@ plt.rcParams['figure.subplot.left'] = 0.11
 plt.rcParams['figure.subplot.bottom'] = 0.08
 plt.rcParams['figure.subplot.right'] = 0.977
 plt.rcParams['figure.subplot.top'] = 0.969
-plt.savefig('mnist_epoch_acc_b_acc_other_form.pdf',  dpi=200)
+plt.savefig('mnist_epoch_acc_b_acc_other_form.png', dpi=200)
 plt.show()
 
 #format='pdf',
