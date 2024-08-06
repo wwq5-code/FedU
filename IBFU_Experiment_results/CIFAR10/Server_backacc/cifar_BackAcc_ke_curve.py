@@ -27,8 +27,8 @@ m_s=15
 plt.plot(x, org, color='cyan',  marker='s',  label='Origin',linewidth=l_w, markersize=m_s)
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=l_w, markersize=m_s)
 plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=l_w, markersize=m_s)
-plt.plot(x, unl_br, color='orange',  marker='x',  label='UIAF',linewidth=l_w,  markersize=m_s)
-plt.plot(x, unl_self_r, color='g',  marker='*',  label='UIAF-U',linewidth=l_w, markersize=m_s)
+plt.plot(x, unl_br, color='orange',  marker='x',  label='FedU',linewidth=l_w,  markersize=m_s)
+plt.plot(x, unl_self_r, color='g',  marker='*',  label='FedU-U',linewidth=l_w, markersize=m_s)
 
 
 

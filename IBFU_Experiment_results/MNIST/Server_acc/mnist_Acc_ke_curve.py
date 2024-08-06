@@ -28,8 +28,8 @@ m_s=15
 
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=l_w, markersize=m_s)
 plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=l_w, markersize=m_s)
-plt.plot(x, unl_br, color='orange',  marker='x',  label='UIAF',linewidth=l_w,  markersize=m_s)
-plt.plot(x, unl_self_r, color='g',  marker='*',  label='UIAF-U',linewidth=l_w, markersize=m_s)
+plt.plot(x, unl_br, color='orange',  marker='x',  label='FedU',linewidth=l_w,  markersize=m_s)
+plt.plot(x, unl_self_r, color='g',  marker='*',  label='FedU-U',linewidth=l_w, markersize=m_s)
 
 # plt.plot(x, y_sa03, color='r',  marker='2',  label='AAAI21 A_acc, pr=0.3',linewidth=3, markersize=8)
 # plt.plot(x, y_sa05, color='darkblue',  marker='4',  label='AAAI21 A_acc, pr=0.5',linewidth=3, markersize=8)

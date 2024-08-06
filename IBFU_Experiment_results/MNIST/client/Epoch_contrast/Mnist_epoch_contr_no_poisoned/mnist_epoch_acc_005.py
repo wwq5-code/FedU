@@ -57,13 +57,13 @@ for i in range(100):
 plt.figure()
 plt.plot(x, y_hbu_acc_list, color='r',  linestyle='-.',  label='HFU (Re.)',linewidth=4, markersize=10)
 #plt.plot(x, y_vbu_acc_list, color='orange', linestyle='--',   label='BFU',linewidth=4,  markersize=10)
-plt.plot(x, y_vibu_ss_acc_list, color='g', linestyle='-',  label='UIAF-U (Re.)',linewidth=4, markersize=10)
+plt.plot(x, y_vibu_ss_acc_list, color='g', linestyle='-',  label='FedU-U (Re.)',linewidth=4, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
 plt.plot(x, y_hbu_b_acc_list, color='grey',  linestyle='-.',  label='HFU (Er.)',linewidth=4, markersize=10)
 #plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='BFU:Era.',linewidth=4,  markersize=10)
-plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='UIAF-U (Er.)',linewidth=4, markersize=10)
+plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='FedU-U (Er.)',linewidth=4, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
@@ -87,7 +87,7 @@ plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='UIAF-U (Er.)
 # plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 plt.xlabel('Epoch' ,fontsize=20)
-plt.ylabel('Accuracy (%)' ,fontsize=20)
+plt.ylabel('Accuracy (%)' ,fontsize=24)
 my_y_ticks = np.arange(0 ,105,20)
 plt.yticks(my_y_ticks,fontsize=20)
 my_x_ticks = np.arange(0, 401, 100)

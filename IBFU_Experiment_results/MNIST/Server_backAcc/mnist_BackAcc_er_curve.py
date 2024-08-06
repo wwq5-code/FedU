@@ -40,8 +40,8 @@ m_s=15
 plt.plot(x, org, color='cyan',  marker='s',  label='Origin',linewidth=l_w, markersize=m_s)
 plt.plot(x, unl_fr, color='blue', marker='^', label='Retrain',linewidth=l_w, markersize=m_s)
 plt.plot(x, unl_hess_r, color='r',  marker='p',  label='HFU',linewidth=l_w, markersize=m_s)
-plt.plot(x, unl_br, color='orange',  marker='x',  label='UIAF',linewidth=l_w,  markersize=m_s)
-plt.plot(x, unl_self_r, color='g',  marker='*',  label='UIAF-U',linewidth=l_w, markersize=m_s)
+plt.plot(x, unl_br, color='orange',  marker='x',  label='FedU',linewidth=l_w,  markersize=m_s)
+plt.plot(x, unl_self_r, color='g',  marker='*',  label='FedU-U',linewidth=l_w, markersize=m_s)
 
 
 # plt.plot(x, y_sa03, color='r',  marker='2',  label='AAAI21 A_acc, pr=0.3',linewidth=3, markersize=8)
@@ -53,7 +53,7 @@ plt.plot(x, unl_self_r, color='g',  marker='*',  label='UIAF-U',linewidth=l_w, m
 # plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 # plt.xlabel('Malicious Client Ratio (%)' ,fontsize=16)
-plt.ylabel('Backdoor Accuracy (%)' ,fontsize=20)
+plt.ylabel('Backdoor Accuracy (%)' ,fontsize=24)
 my_y_ticks = np.arange(0 ,101,20)
 plt.yticks(my_y_ticks,fontsize=20)
 

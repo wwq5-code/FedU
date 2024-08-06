@@ -17,13 +17,13 @@ width = 0.6  # the width of the bars
 
 plt.subplots()
 plt.bar(x - width / 2 + width / 8, unl_fr, width=0.148, label='Retrain', color='royalblue', hatch='/')
-plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', color='red', hatch='-')
+plt.bar(x + width / 2 - width / 8, unl_hess_r, width=0.148, label='HFU', color='red', hatch='o')
 
-plt.bar(x - width / 8, unl_br, width=0.148, label='UIAF', color='gold', hatch='**')
-plt.bar(x + width / 8, unl_self_r, width=0.148, label='UIAF-U', color='green', hatch='++')
+plt.bar(x - width / 8, unl_br, width=0.148, label='FedU', color='gold', hatch='\\')
+plt.bar(x + width / 8, unl_self_r, width=0.148, label='FedU-U', color='green', hatch='x')
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
-plt.ylabel('Running Time (s)', fontsize=20)
+plt.ylabel('Running Time (s)', fontsize=24)
 # ax.set_title('Performance of Different Users n')
 plt.xticks(x, labels, fontsize=20)
 # ax.set_xticklabels(labels,fontsize=15)
@@ -32,7 +32,7 @@ my_y_ticks = np.arange(0, 3, 0.5)
 plt.yticks(my_y_ticks, fontsize=20)
 # ax.set_yticklabels(my_y_ticks,fontsize=15)
 
-plt.legend(loc='upper right', fontsize=15)
+plt.legend(loc='upper right', fontsize=20)
 plt.xlabel('$\it{EDR}$' ,fontsize=20)
 # ax.bar_label(rects1, padding=1)
 # ax.bar_label(rects2, padding=3)

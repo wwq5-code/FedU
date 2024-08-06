@@ -71,8 +71,8 @@ fig, ax = plt.subplots(1, 1, figsize=(7, 5.2))
 marker_size = 8
 target_width = 6
 ax.scatter(y_hbu_b_acc_list, y_hbu_acc_list, color='r',  linestyle='-.',s=40*marker_size,   marker='p', label='HFU',linewidth=0)
-ax.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*marker_size, marker='^',  label='UIAF',linewidth=0)
-ax.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*marker_size,  marker='o',  label='UIAF-U',linewidth=0)
+ax.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*marker_size, marker='^',  label='FedU',linewidth=0)
+ax.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*marker_size,  marker='o',  label='FedU-U',linewidth=0)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
@@ -83,8 +83,8 @@ ax.plot([100,100],[-10, 130], color='skyblue', label='Inf.-For.',linewidth=targe
 
 axins = ax.inset_axes((0.45, 0.2, 0.38, 0.38))
 
-axins.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*marker_size, marker='^',  label='UIAF',linewidth=0)
-axins.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*marker_size,  marker='o',  label='UIAF-U',linewidth=0)
+axins.scatter(y_vbu_b_acc_list, y_vbu_acc_list, color='orange', linestyle='--', s=40*marker_size, marker='^',  label='FedU',linewidth=0)
+axins.scatter(y_vibu_ss_b_acc_list, y_vibu_ss_acc_list, color='g', linestyle='-',s=40*marker_size,  marker='o',  label='FedU-U',linewidth=0)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 axins.scatter(y_hbu_b_acc_list, y_hbu_acc_list, color='r',  linestyle='-.',s=40*marker_size,   marker='p', label='HFU',linewidth=0)
 
@@ -158,7 +158,7 @@ axins.add_artist(con)
 # plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 plt.xlabel('Forgetting (%)' ,fontsize=22)
-plt.ylabel('Utility Preservation (%)' ,fontsize=22)
+plt.ylabel('Utility Preservation (%)' ,fontsize=24)
 my_y_ticks = np.arange(0 ,115,25)
 plt.yticks(my_y_ticks,fontsize=20)
 plt.ylim((0,115))

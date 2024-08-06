@@ -1,6 +1,6 @@
 # FedU
 
-# FedU: Federated Unlearning via User-Side Influence Approximate Forgetting with Utility Preservation (UIAF-U)
+# FedU: Federated Unlearning via User-Side Influence Approximate Forgetting with Utility Preservation
 
 
 ### Overview

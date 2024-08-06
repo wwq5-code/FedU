@@ -57,14 +57,14 @@ l_w=3.5
 
 plt.figure()
 plt.plot(x, y_hbu_acc_list, color='r',  linestyle='-.',  label='HFU',linewidth=l_w, markersize=10)
-plt.plot(x, y_vbu_acc_list, color='orange', linestyle='--',   label='UIAF',linewidth=l_w,  markersize=10)
-plt.plot(x, y_vibu_ss_acc_list, color='g', linestyle='-',  label='UIAF-U',linewidth=l_w, markersize=10)
+plt.plot(x, y_vbu_acc_list, color='orange', linestyle='--',   label='FedU',linewidth=l_w,  markersize=10)
+plt.plot(x, y_vibu_ss_acc_list, color='g', linestyle='-',  label='FedU-U',linewidth=l_w, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
 plt.plot(x, y_hbu_b_acc_list, color='grey',  linestyle='-.',  label='HFU (bac.)',linewidth=l_w, markersize=10)
-plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='UIAF (bac.)',linewidth=l_w,  markersize=10)
-plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='UIAF-U (bac.)',linewidth=l_w, markersize=10)
+plt.plot(x, y_vbu_b_acc_list, color='b', linestyle='--',   label='FedU (bac.)',linewidth=l_w,  markersize=10)
+plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='FedU-U (bac.)',linewidth=l_w, markersize=10)
 # #plt.plot(x, y_fkl, color='g',  marker='+',  label='VRFL')
 
 
@@ -88,7 +88,7 @@ plt.plot(x, y_vibu_ss_b_acc_list, color='y', linestyle='-',  label='UIAF-U (bac.
 # plt.grid()
 leg = plt.legend(fancybox=True, shadow=True)
 plt.xlabel('Epoch' ,fontsize=20)
-plt.ylabel('Accuracy (%)' ,fontsize=20)
+plt.ylabel('Accuracy (%)' ,fontsize=24)
 my_y_ticks = np.arange(0 ,105,20)
 plt.yticks(my_y_ticks,fontsize=20)
 my_x_ticks = np.arange(0, 201, 50)
